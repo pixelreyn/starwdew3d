@@ -1,0 +1,10 @@
+﻿{
+  "Name": "Stardew Valley 3D",
+  "Author": "PixelReyn",
+  "Version": "1.0.0",
+  "Description": "An attempt to make a 3D client for Stardew Valley",
+  "UniqueID": "PixelReynStudios.StardewValley3D",
+  "EntryDll": "StardewValley3D.dll",
+  "MinimumApiVersion": "4.0.0",
+  "UpdateKeys": []
+}
