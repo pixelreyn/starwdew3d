@@ -32,4 +32,31 @@ public class Character
         else if (WorldRotation == 3)
             Camera.Target = Raymath.Vector3Add(Camera.Position, new System.Numerics.Vector3(-10f, 0.0f, 0f));
     }
+
+    public void DoInput()
+    {
+        Vector2 mInput = new(Raylib.IsKeyDown(KeyboardKey.D) ? 1 : Raylib.IsKeyDown(KeyboardKey.A) ? -1 : 0.0f,
+            Raylib.IsKeyDown(KeyboardKey.W) ? 1 : Raylib.IsKeyDown(KeyboardKey.S) ? -1 : 0.0f);
+        
+        Game1.player.movementDirections.Clear();
+        if (Game1.player.canMove)
+        {
+            if (Raylib.IsKeyDown(KeyboardKey.D))
+                Game1.player.movementDirections.Add(1);
+            if (Raylib.IsKeyDown(KeyboardKey.A))
+                Game1.player.movementDirections.Add(3);
+            if (Raylib.IsKeyDown(KeyboardKey.W))
+                Game1.player.movementDirections.Add(0);
+            if (Raylib.IsKeyDown(KeyboardKey.S))
+                Game1.player.movementDirections.Add(2);
+
+            Game1.player.xVelocity = mInput.X;
+            Game1.player.yVelocity = mInput.Y;
+        }
+        else
+        {
+            Game1.eventUp = false;
+        }
+        //Game1.player.FacingDirection = Camera.Target.z;
+    }
 }

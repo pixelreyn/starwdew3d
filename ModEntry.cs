@@ -1,22 +1,20 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Raylib_cs;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
-using StardewModdingAPI.Utilities;
 using StardewValley;
-using Color = Microsoft.Xna.Framework.Color;
+using Color = Raylib_cs.Color;
 
 namespace StardewValley3D
 {
     /// <summary>The mod entry point.</summary>
     internal sealed class ModEntry : Mod
     {
-        
-        private IModHelper? m_Helper = null;
 
-        private StardewInterfaces.Character? m_Character = null;
-        private StardewInterfaces.Map? m_Map = null;
+        private StardewInterfaces.Character? _mCharacter;
+
+        private StardewInterfaces.Map? _mMap;
+
         /*********
          ** Public methods
          *********/
@@ -28,23 +26,21 @@ namespace StardewValley3D
             helper.Events.Display.RenderedWorld += DisplayOnRenderedWorld;
             helper.Events.Player.Warped += PlayerOnWarped;
             helper.Events.GameLoop.UpdateTicked += GameLoopOnUpdateTicked;
-            m_Helper = helper;
         }
 
         private void GameLoopOnUpdateTicked(object? sender, UpdateTickedEventArgs e)
         {
             if (!Context.IsWorldReady)
                 return;
-            
-            m_Character ??= new StardewInterfaces.Character();
-            m_Map ??= new StardewInterfaces.Map();
+
+           
         }
 
         private void PlayerOnWarped(object? sender, WarpedEventArgs e)
         {
             //Update the base map to render here
         }
-
+        
         private void GameLoopOnSaveLoaded(object? sender, SaveLoadedEventArgs e)
         {
             this.Monitor.Log($"Game Launched", LogLevel.Debug);
@@ -52,21 +48,26 @@ namespace StardewValley3D
             {
                 Raylib.InitWindow(640, 360, "StardewValley3D");
                 CameraMode cameraMode = CameraMode.ThirdPerson;
-
+                
+                _mCharacter ??= new StardewInterfaces.Character();
+                _mMap ??= new StardewInterfaces.Map();
+                Game1.options.pauseWhenOutOfFocus = false;
+                
                 Raylib.SetTargetFPS(60);
                 while (!Raylib.WindowShouldClose())
                 {
-                    if (m_Character != null && m_Map != null)
+                    if (_mCharacter != null && _mMap != null)
                     {
-                        m_Character.UpdateCamera();
-                        Raylib.UpdateCamera(ref m_Character.Camera, cameraMode);
+                        _mCharacter.DoInput();
+                        _mCharacter.UpdateCamera();
+                        Raylib.UpdateCamera(ref _mCharacter.Camera, cameraMode);
                         Raylib.BeginDrawing();
-                        Raylib.ClearBackground(Raylib_cs.Color.White);
-                        Raylib.BeginMode3D(m_Character.Camera);
-                        m_Map.DrawMap();
-
+                        Raylib.ClearBackground(Color.White);
+                        Raylib.BeginMode3D(_mCharacter.Camera);
+                        _mMap.DrawMap();
                         Raylib.EndMode3D();
                         Raylib.EndDrawing();
+                        //Game1.game1.Instance_Update(Game1.currentGameTime);
                     }
                 }
 
@@ -76,22 +77,8 @@ namespace StardewValley3D
 
         private void DisplayOnRenderedWorld(object? sender, RenderedWorldEventArgs e)
         {
-            
-        }
 
-
-        /*********
-         ** Private methods
-         *********/
-        /// <summary>Raised after the player presses a button on the keyboard, controller, or mouse.</summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event data.</param>
-        private void OnButtonPressed(object? sender, ButtonPressedEventArgs e)
-        {
-            // ignore if player hasn't loaded a save yet
-            if (!Context.IsWorldReady)
-                return;
-            
         }
     }
 }
+

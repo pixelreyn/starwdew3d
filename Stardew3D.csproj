@@ -12,6 +12,7 @@
     <ItemGroup>
       <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.1" />
       <PackageReference Include="Raylib-cs" Version="6.1.1" />
+      <PackageReference Include="Sayers.SDL2.Core" Version="1.0.11" />
     </ItemGroup>
 
 </Project>

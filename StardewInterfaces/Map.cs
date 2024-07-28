@@ -68,16 +68,16 @@ public class Map
             if (furniture == null)
                 continue;
             for(int tX = 0; tX < (furniture.boundingBox.Width / 64); tX++)
-            for(int tY = 0; tY < (furniture.boundingBox.Height / 64); tY++)
-                Raylib.DrawCube(new System.Numerics.Vector3((furniture.TileLocation.X + tX) * 64, 1 * 32, (furniture.TileLocation.Y + tY) * 64), 64.0f, 32.0f,64.0f, new Raylib_cs.Color(92, 46, 0, 255));
+                for(int tY = 0; tY < (furniture.boundingBox.Height / 64); tY++)
+                    Raylib.DrawCube(new System.Numerics.Vector3((furniture.TileLocation.X + tX) * 64, 1 * 32, (furniture.TileLocation.Y + tY) * 64), 64.0f, 32.0f,64.0f, new Raylib_cs.Color(92, 46, 0, 255));
         }
         
         foreach(var wObject in Game1.game1.instanceGameLocation.objects.Values) {
             if (wObject == null)
                 continue;
             for(int tX = 0; tX < (wObject.boundingBox.Width / 64); tX++)
-            for(int tY = 0; tY < (wObject.boundingBox.Height / 64); tY++)
-                Raylib.DrawCube(new System.Numerics.Vector3((wObject.TileLocation.X + tX) * 64, 1 * 32, (wObject.TileLocation.Y + tY) * 64), 32.0f, 16.0f,32.0f, new Raylib_cs.Color(0,0,255, 255));
+                for(int tY = 0; tY < (wObject.boundingBox.Height / 64); tY++)
+                    Raylib.DrawCube(new System.Numerics.Vector3((wObject.TileLocation.X + tX) * 64, 1 * 32, (wObject.TileLocation.Y + tY) * 64), 32.0f, 16.0f,32.0f, new Raylib_cs.Color(0,0,255, 255));
         }
 
         foreach (var tf in Game1.game1.instanceGameLocation.terrainFeatures.Values)
@@ -87,10 +87,10 @@ public class Map
                 if (tf is Tree)
                     Raylib.DrawCube(new System.Numerics.Vector3((tf.Tile.X) * 64, 1 * 32, (tf.Tile.Y) * 64), 64.0f,
                         128.0f, 64.0f, new Raylib_cs.Color(41, 25, 5, 255));
-                else if (tf is HoeDirt && (tf as HoeDirt).crop == null)
+                else if (tf is HoeDirt { crop: null })
                     Raylib.DrawCube(new System.Numerics.Vector3((tf.Tile.X) * 64, 1 * 32, (tf.Tile.Y) * 64), 64.0f,
                         32.0f, 64.0f, new Raylib_cs.Color(41, 25, 5, 255));
-                else if (tf is HoeDirt && (tf as HoeDirt).crop != null)
+                else if (tf is HoeDirt { crop: not null })
                     Raylib.DrawCube(new System.Numerics.Vector3((tf.Tile.X) * 64, 1 * 32, (tf.Tile.Y) * 64), 32.0f,
                         32.0f, 32.0f, new Raylib_cs.Color(0, 255, 0, 255));
             }
