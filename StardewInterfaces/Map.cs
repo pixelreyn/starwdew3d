@@ -1,35 +1,46 @@
-﻿using Raylib_cs;
+﻿using System.Numerics;
+using Raylib_cs;
 using StardewValley;
 using StardewValley.TerrainFeatures;
 using xTile.Layers;
 
 namespace StardewValley3D.StardewInterfaces;
 
+struct WorldTile
+{
+    private Color Color;
+}
 public class Map
 {
+    
     public void DrawMap()
     {
+        Dictionary<System.Numerics.Vector3, WorldTile> GameTiles = new();
+        
         var layerLevel = 0;
         Random rand = new Random();
         foreach (var layer in Game1.game1.instanceGameLocation.Map.Layers)
         {
+            if (!layer.Id.Contains("Back"))
+                continue;
+            
             Raylib_cs.Color color;
             switch (layer.Id)
             {
-                case "Back":
+                case "Back"://floor
                     layerLevel = 0;
                     color = new Raylib_cs.Color(36, 36, 36, 255);
                     break;
-                case "Paths":
+                case "Paths"://floor+1
                     layerLevel = 0;
                     color = new Raylib_cs.Color(156, 152, 152, 255);
                     break;
-                case "Front":
+                case "Front"://Sprites
                     layerLevel = 2;
                     color = new Raylib_cs.Color(108, 120, 91, 255);
                     break;
                 case "Buildings":
-                case "Buildings2":
+                case "Buildings2"://Walls
                     layerLevel = 1;
                     color = new Raylib_cs.Color(66, 66, 66, 255);
                     break;
@@ -42,7 +53,6 @@ public class Map
                     color = new Raylib_cs.Color(66, 66, 66, 255);
                     break;
             }
-            //Parallel.For((int)0, (int)layer.TileWidth, (x) =>
             for (var x = 0; x < layer.Tiles.Array.GetLength(0); x++)
             {
                 for (var y = 0; y < layer.Tiles.Array.GetLength(1); y++)
@@ -88,8 +98,8 @@ public class Map
                     Raylib.DrawCube(new System.Numerics.Vector3((tf.Tile.X) * 64, 1 * 32, (tf.Tile.Y) * 64), 64.0f,
                         128.0f, 64.0f, new Raylib_cs.Color(41, 25, 5, 255));
                 else if (tf is HoeDirt { crop: null })
-                    Raylib.DrawCube(new System.Numerics.Vector3((tf.Tile.X) * 64, 1 * 32, (tf.Tile.Y) * 64), 64.0f,
-                        32.0f, 64.0f, new Raylib_cs.Color(41, 25, 5, 255));
+                    Raylib.DrawCube(new System.Numerics.Vector3((tf.Tile.X) * 64, 0, (tf.Tile.Y) * 64), 64.0f,
+                        64.0f, 64.0f, new Raylib_cs.Color(41, 25, 5, 255));
                 else if (tf is HoeDirt { crop: not null })
                     Raylib.DrawCube(new System.Numerics.Vector3((tf.Tile.X) * 64, 1 * 32, (tf.Tile.Y) * 64), 32.0f,
                         32.0f, 32.0f, new Raylib_cs.Color(0, 255, 0, 255));
@@ -99,7 +109,8 @@ public class Map
         foreach(var npc in Game1.game1.instanceGameLocation.characters) {
             if (npc == null)
                 continue;
-            Raylib.DrawCube(new System.Numerics.Vector3((npc.Tile.X) * 64, 1 * 32, (npc.Tile.Y) * 64), 64.0f, 92.0f,64.0f, new Raylib_cs.Color(255, 0, 0, 255));
+            
+            Raylib.DrawCube(new System.Numerics.Vector3((npc.Tile.X) * 64, 1 * 32, (npc.Tile.Y) * 64), 16.0f, 92.0f,16.0f, new Raylib_cs.Color(255, 0, 0, 255));
         }
     }
 }
