@@ -43,16 +43,14 @@ public class Character
         Game1.player.movementDirections.Clear();
         if (Game1.player.canMove)
         {
-            /*if (Raylib.IsKeyDown(KeyboardKey.D))
-                Game1.player.movementDirections.Add(1);
-            if (Raylib.IsKeyDown(KeyboardKey.A))
-                Game1.player.movementDirections.Add(3);
-            if (Raylib.IsKeyDown(KeyboardKey.W))
-                Game1.player.movementDirections.Add(0);
-            if (Raylib.IsKeyDown(KeyboardKey.S))
-                Game1.player.movementDirections.Add(2);
-                */
-
+            if (Raylib.IsMouseButtonPressed(MouseButton.Left))
+                Game1.pressUseToolButton();
+            if (Raylib.IsMouseButtonPressed(MouseButton.Right))
+                Game1.pressActionButton(Game1.input.GetKeyboardState(), Game1.input.GetMouseState(), Game1.input.GetGamePadState());
+            
+            if(Raylib.GetMouseWheelMove() > 0)
+                Game1.pressSwitchToolButton();
+            
             if (Raylib.IsKeyPressed(KeyboardKey.E))
                 CurrentRotation = CurrentRotation + 1 > 3 ? 0 : CurrentRotation + 1;
             if (Raylib.IsKeyPressed(KeyboardKey.Q))

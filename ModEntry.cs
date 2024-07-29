@@ -25,6 +25,27 @@ namespace StardewValley3D
             helper.Events.GameLoop.SaveLoaded += GameLoopOnSaveLoaded;
             helper.Events.Player.Warped += PlayerOnWarped;
             helper.Events.GameLoop.UpdateTicked += GameLoopOnUpdateTicked;
+            helper.Events.World.DebrisListChanged += WorldOnDebrisListChanged;
+            helper.Events.World.ObjectListChanged += WorldOnObjectListChanged;
+            helper.Events.World.TerrainFeatureListChanged += WorldOnTerrainFeatureListChanged;
+        }
+
+        private void WorldOnTerrainFeatureListChanged(object? sender, TerrainFeatureListChangedEventArgs e)
+        {
+            if(_mMap != null)
+                _mMap.GenerateMap();
+        }
+
+        private void WorldOnObjectListChanged(object? sender, ObjectListChangedEventArgs e)
+        {
+            if(_mMap != null)
+                _mMap.GenerateMap();
+        }
+
+        private void WorldOnDebrisListChanged(object? sender, DebrisListChangedEventArgs e)
+        {
+            if(_mMap != null)
+                _mMap.GenerateMap();
         }
 
         private void GameLoopOnUpdateTicked(object? sender, UpdateTickedEventArgs e)
@@ -38,8 +59,8 @@ namespace StardewValley3D
         private void PlayerOnWarped(object? sender, WarpedEventArgs e)
         {
             //Update the base map to render here
-            //if(_mMap != null)
-                //_mMap.GenerateMap();
+            if(_mMap != null)
+                _mMap.GenerateMap();
         }
         
         private void GameLoopOnSaveLoaded(object? sender, SaveLoadedEventArgs e)
@@ -48,13 +69,10 @@ namespace StardewValley3D
             
             _mCharacter ??= new StardewInterfaces.Character();
             _mMap ??= new StardewInterfaces.Map();
-            
+            _mMap.GenerateMap();
             Task.Run(() =>
             {
                 Raylib.InitWindow(640, 360, "StardewValley3D");
-                CameraMode cameraMode = CameraMode.ThirdPerson;
-                
-                
                 Game1.options.pauseWhenOutOfFocus = false;
                 
                 Raylib.SetTargetFPS(60);
@@ -66,13 +84,12 @@ namespace StardewValley3D
                         _mCharacter.UpdateCamera();
                         
                         Raylib.BeginDrawing();
-                        Raylib.ClearBackground(Raylib_cs.Color.White);
-
+                        Raylib.ClearBackground(Raylib_cs.Color.Black);
+        
                         _mCharacter.Camera.BeginMode3D();
                         _mMap.DrawMap();
                         _mCharacter.Camera.EndMode3D();
                         Raylib.EndDrawing();
-                        //Game1.game1.Instance_Update(Game1.currentGameTime);
                     }
                 }
 
