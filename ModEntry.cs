@@ -1,9 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Raylib_cs;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
-using Color = Raylib_cs.Color;
 
 namespace StardewValley3D
 {
@@ -12,7 +13,6 @@ namespace StardewValley3D
     {
 
         private StardewInterfaces.Character? _mCharacter;
-
         private StardewInterfaces.Map? _mMap;
 
         /*********
@@ -23,7 +23,6 @@ namespace StardewValley3D
         public override void Entry(IModHelper helper)
         {
             helper.Events.GameLoop.SaveLoaded += GameLoopOnSaveLoaded;
-            helper.Events.Display.RenderedWorld += DisplayOnRenderedWorld;
             helper.Events.Player.Warped += PlayerOnWarped;
             helper.Events.GameLoop.UpdateTicked += GameLoopOnUpdateTicked;
         }
@@ -39,18 +38,23 @@ namespace StardewValley3D
         private void PlayerOnWarped(object? sender, WarpedEventArgs e)
         {
             //Update the base map to render here
+            //if(_mMap != null)
+                //_mMap.GenerateMap();
         }
         
         private void GameLoopOnSaveLoaded(object? sender, SaveLoadedEventArgs e)
         {
             this.Monitor.Log($"Game Launched", LogLevel.Debug);
+            
+            _mCharacter ??= new StardewInterfaces.Character();
+            _mMap ??= new StardewInterfaces.Map();
+            
             Task.Run(() =>
             {
                 Raylib.InitWindow(640, 360, "StardewValley3D");
                 CameraMode cameraMode = CameraMode.ThirdPerson;
                 
-                _mCharacter ??= new StardewInterfaces.Character();
-                _mMap ??= new StardewInterfaces.Map();
+                
                 Game1.options.pauseWhenOutOfFocus = false;
                 
                 Raylib.SetTargetFPS(60);
@@ -60,12 +64,13 @@ namespace StardewValley3D
                     {
                         _mCharacter.DoInput();
                         _mCharacter.UpdateCamera();
-                        Raylib.UpdateCamera(ref _mCharacter.Camera, cameraMode);
+                        
                         Raylib.BeginDrawing();
-                        Raylib.ClearBackground(Color.White);
-                        Raylib.BeginMode3D(_mCharacter.Camera);
+                        Raylib.ClearBackground(Raylib_cs.Color.White);
+
+                        _mCharacter.Camera.BeginMode3D();
                         _mMap.DrawMap();
-                        Raylib.EndMode3D();
+                        _mCharacter.Camera.EndMode3D();
                         Raylib.EndDrawing();
                         //Game1.game1.Instance_Update(Game1.currentGameTime);
                     }
@@ -75,10 +80,6 @@ namespace StardewValley3D
             });
         }
 
-        private void DisplayOnRenderedWorld(object? sender, RenderedWorldEventArgs e)
-        {
-
-        }
     }
 }
 
