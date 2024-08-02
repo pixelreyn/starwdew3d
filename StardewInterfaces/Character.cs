@@ -7,10 +7,9 @@ namespace StardewValley3D.StardewInterfaces;
 
 public class Character
 {
-    public Vector2 WorldPosition => Game1.player.Position;
-    public int WorldRotation => Game1.player.FacingDirection;
-    private int CurrentRotation = 0;
-    public Camera Camera;
+    private Vector2 WorldPosition => Game1.player.Position;
+    private int _currentRotation = 0;
+    public readonly Camera Camera;
 
     public Character()
     {
@@ -25,21 +24,21 @@ public class Character
         Camera.Position = new Vector3(WorldPosition.X, 62.0f, WorldPosition.Y);
         Vector3 forward = Vector3.Zero;
     
-        if (CurrentRotation == 0)
+        if (_currentRotation == 0)
             forward = new Vector3(0, 0, -1); // Looking towards the negative Z direction
-        else if (CurrentRotation == 1)
+        else if (_currentRotation == 1)
             forward = new Vector3(1, 0, 0);  // Looking towards the positive X direction
-        else if (CurrentRotation == 2)
+        else if (_currentRotation == 2)
             forward = new Vector3(0, 0, 1);  // Looking towards the positive Z direction
-        else if (CurrentRotation == 3)
+        else if (_currentRotation == 3)
             forward = new Vector3(-1, 0, 0); // Looking towards the negative X direction
 
         Vector3 target = Camera.Position + forward;
         Camera.ViewMatrix = Camera.CreateLookAt(Camera.Position, target, Vector3.Up);
     }
 
-    private bool JustEd;
-    private bool JustQd;
+    private bool _justEd;
+    private bool _justQd;
 
     public void DoInput()
     {
@@ -56,29 +55,29 @@ public class Character
         if (Game1.player.canMove)
         {
 
-            if (Game1.input.GetKeyboardState().IsKeyDown(Keys.E) && !JustEd)
+            if (Game1.input.GetKeyboardState().IsKeyDown(Keys.E) && !_justEd)
             {
-                CurrentRotation = CurrentRotation + 1 > 3 ? 0 : CurrentRotation + 1;
-                JustEd = true;
+                _currentRotation = _currentRotation + 1 > 3 ? 0 : _currentRotation + 1;
+                _justEd = true;
             }
-            else if(JustEd && Game1.input.GetKeyboardState().IsKeyUp(Keys.E))
+            else if(_justEd && Game1.input.GetKeyboardState().IsKeyUp(Keys.E))
             {
-                JustEd = false;
-            }
-
-            if (Game1.input.GetKeyboardState().IsKeyDown(Keys.Q) && !JustQd)
-            {
-                CurrentRotation = CurrentRotation - 1 < 0 ? 3 : CurrentRotation - 1;
-                JustQd = true;
-            }
-            else if(JustQd && Game1.input.GetKeyboardState().IsKeyUp(Keys.Q))
-            {
-                JustQd = false;
+                _justEd = false;
             }
 
-            Game1.player.FacingDirection = CurrentRotation;
+            if (Game1.input.GetKeyboardState().IsKeyDown(Keys.Q) && !_justQd)
+            {
+                _currentRotation = _currentRotation - 1 < 0 ? 3 : _currentRotation - 1;
+                _justQd = true;
+            }
+            else if(_justQd && Game1.input.GetKeyboardState().IsKeyUp(Keys.Q))
+            {
+                _justQd = false;
+            }
 
-            switch (CurrentRotation)
+            Game1.player.FacingDirection = _currentRotation;
+
+            switch (_currentRotation)
             {
                 case 0:
                     Game1.player.xVelocity = mInput.X;
@@ -107,7 +106,7 @@ public class Character
             if (Game1.player.yVelocity > 0)
                 Game1.player.movementDirections.Add(0);
 
-            Game1.player.FacingDirection = CurrentRotation;
+            Game1.player.FacingDirection = _currentRotation;
         }
         else
         {
