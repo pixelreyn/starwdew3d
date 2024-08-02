@@ -10,9 +10,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="ILGPU" Version="1.5.1" />
       <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.1" />
-      <PackageReference Include="Raylib-cs" Version="6.1.1" />
-      <PackageReference Include="Sayers.SDL2.Core" Version="1.0.11" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ClCompile Include="Shaders\PixelShader.fx" />
     </ItemGroup>
 
 </Project>

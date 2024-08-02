@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Raylib_cs;
-using raylibExtras;
+using Microsoft.Xna.Framework.Input;
 using StardewValley;
+using StardewValley3D.Rendering;
 
 namespace StardewValley3D.StardewInterfaces;
 
@@ -10,51 +10,71 @@ public class Character
     public Vector2 WorldPosition => Game1.player.Position;
     public int WorldRotation => Game1.player.FacingDirection;
     private int CurrentRotation = 0;
-    public rlFPCamera Camera;
+    public Camera Camera;
 
     public Character()
     {
-        Camera = new();
-        Camera.Setup(60, new System.Numerics.Vector3(WorldPosition.X, 2.0f, WorldPosition.Y));
-        Camera.MoveSpeed.Z = 0;
-        Camera.MoveSpeed.X = 0;
-        Camera.FarPlane = 5000;
+        Camera = new(new Vector3(WorldPosition.X, 62.0f, WorldPosition.Y), 
+            Camera.CreateLookAt(new Vector3(WorldPosition.X, 62.0f, WorldPosition.Y), new Vector3(WorldPosition.X, 62.0f, WorldPosition.Y + 10.0f), Vector3.UnitY),
+            Camera.CreatePerspectiveFieldOfView((float)Math.PI / 4, 800f / 600f, 0.1f, 100f));
 
     }
 
     public void UpdateCamera()
     {
-        Camera.ViewCamera.Position = new System.Numerics.Vector3(WorldPosition.X, 62.0f, WorldPosition.Y);
-        if(WorldRotation == 0)
-            Camera.ViewCamera.Target = Raymath.Vector3Add(Camera.ViewCamera.Position, new System.Numerics.Vector3(0.0f, 0.0f, -10f));
-        else if (WorldRotation == 1)
-            Camera.ViewCamera.Target = Raymath.Vector3Add(Camera.ViewCamera.Position, new System.Numerics.Vector3(10f, 0.0f, 0.0f));
-        else if(WorldRotation == 2)
-            Camera.ViewCamera.Target = Raymath.Vector3Add(Camera.ViewCamera.Position, new System.Numerics.Vector3(0.0f, 0.0f, 10f));
-        else if (WorldRotation == 3)
-            Camera.ViewCamera.Target = Raymath.Vector3Add(Camera.ViewCamera.Position, new System.Numerics.Vector3(-10f, 0.0f, 0f));
+        Camera.Position = new Vector3(WorldPosition.X, 62.0f, WorldPosition.Y);
+        Vector3 forward = Vector3.Zero;
+    
+        if (CurrentRotation == 0)
+            forward = new Vector3(0, 0, -1); // Looking towards the negative Z direction
+        else if (CurrentRotation == 1)
+            forward = new Vector3(1, 0, 0);  // Looking towards the positive X direction
+        else if (CurrentRotation == 2)
+            forward = new Vector3(0, 0, 1);  // Looking towards the positive Z direction
+        else if (CurrentRotation == 3)
+            forward = new Vector3(-1, 0, 0); // Looking towards the negative X direction
+
+        Vector3 target = Camera.Position + forward;
+        Camera.ViewMatrix = Camera.CreateLookAt(Camera.Position, target, Vector3.Up);
     }
+
+    private bool JustEd;
+    private bool JustQd;
 
     public void DoInput()
     {
-        Vector2 mInput = new(Raylib.IsKeyDown(KeyboardKey.D) ? 1 : Raylib.IsKeyDown(KeyboardKey.A) ? -1 : 0.0f,
-            Raylib.IsKeyDown(KeyboardKey.W) ? 1 : Raylib.IsKeyDown(KeyboardKey.S) ? -1 : 0.0f);
+        Vector2 mInput = new(Game1.input.GetKeyboardState().IsKeyDown(Keys.D) ? 1 : Game1.input.GetKeyboardState().IsKeyDown(Keys.A) ? -1 : 0.0f,
+            Game1.input.GetKeyboardState().IsKeyDown(Keys.W) ? 1 : Game1.input.GetKeyboardState().IsKeyDown(Keys.S) ? -1 : 0.0f);
+        if (mInput.X != 0 || mInput.Y != 0)
+            Game1.freezeControls = true;
+        else
+            Game1.freezeControls = false;
         
         Game1.player.movementDirections.Clear();
+        Game1.player.xVelocity = 0;
+        Game1.player.yVelocity = 0;
         if (Game1.player.canMove)
         {
-            if (Raylib.IsMouseButtonPressed(MouseButton.Left))
-                Game1.pressUseToolButton();
-            if (Raylib.IsMouseButtonPressed(MouseButton.Right))
-                Game1.pressActionButton(Game1.input.GetKeyboardState(), Game1.input.GetMouseState(), Game1.input.GetGamePadState());
-            
-            if(Raylib.GetMouseWheelMove() > 0)
-                Game1.pressSwitchToolButton();
-            
-            if (Raylib.IsKeyPressed(KeyboardKey.E))
+
+            if (Game1.input.GetKeyboardState().IsKeyDown(Keys.E) && !JustEd)
+            {
                 CurrentRotation = CurrentRotation + 1 > 3 ? 0 : CurrentRotation + 1;
-            if (Raylib.IsKeyPressed(KeyboardKey.Q))
+                JustEd = true;
+            }
+            else if(JustEd && Game1.input.GetKeyboardState().IsKeyUp(Keys.E))
+            {
+                JustEd = false;
+            }
+
+            if (Game1.input.GetKeyboardState().IsKeyDown(Keys.Q) && !JustQd)
+            {
                 CurrentRotation = CurrentRotation - 1 < 0 ? 3 : CurrentRotation - 1;
+                JustQd = true;
+            }
+            else if(JustQd && Game1.input.GetKeyboardState().IsKeyUp(Keys.Q))
+            {
+                JustQd = false;
+            }
 
             Game1.player.FacingDirection = CurrentRotation;
 
@@ -93,6 +113,7 @@ public class Character
         {
             Game1.eventUp = false;
         }
+        
         //Game1.player.FacingDirection = Camera.Target.z;
     }
 }
