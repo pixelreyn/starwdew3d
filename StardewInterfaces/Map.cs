@@ -1,6 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Concurrent;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.ItemTypeDefinitions;
 using StardewValley.TerrainFeatures;
 using StardewValley3D.Rendering;
 using xTile.Layers;
@@ -19,66 +22,54 @@ public struct WorldTile
         Vector3 max = Position + Size / 2.0f;
         return new BoundingBox(min, max);
     }
+    
+    public Vector3 GetNormal(Vector3 hitPoint)
+    {
+        // Calculate which face of the bounding box was hit based on the hit point
+        BoundingBox box = GetBoundingBox();
+        Vector3 normal = Vector3.Zero;
+
+        float bias = 0.0001f; // Small bias to prevent numerical errors
+        Vector3 boxMin = box.Min;
+        Vector3 boxMax = box.Max;
+
+        if (Math.Abs(hitPoint.X - boxMin.X) < bias) normal = Vector3.Left;
+        else if (Math.Abs(hitPoint.X - boxMax.X) < bias) normal = Vector3.Right;
+        else if (Math.Abs(hitPoint.Y - boxMin.Y) < bias) normal = Vector3.Down;
+        else if (Math.Abs(hitPoint.Y - boxMax.Y) < bias) normal = Vector3.Up;
+        else if (Math.Abs(hitPoint.Z - boxMin.Z) < bias) normal = Vector3.Backward;
+        else if (Math.Abs(hitPoint.Z - boxMax.Z) < bias) normal = Vector3.Forward;
+
+        return normal;
+    }
+}
+
+public struct BvhNode
+{
+    public BoundingBox BoundingBox;
+    public int LeftChild; // Index of the left child node (-1 if none)
+    public int RightChild; // Index of the right child node (-1 if none)
+    public int Start; // Start index for tiles (used in leaf nodes)
+    public int Count; // Number of tiles (used in leaf nodes)
+
+    public bool IsLeaf => LeftChild == -1 && RightChild == -1;
 }
 
 public class Map
 {
-    public List<WorldTile> Tiles = new List<WorldTile>();
-    private bool Generating = false;
-    
-    public Dictionary<Point, List<WorldTile>> spatialGrid;
-    private const int GridCellSize = 64; // Example cell size, adjust as needed
-    private Point gridSize;
-    
-    public Map()
-    {
-        spatialGrid = new Dictionary<Point, List<WorldTile>>();
-    }
-    
+    public ConcurrentDictionary<(int x, int y, int z), Object3D> _3dObjects = new ConcurrentDictionary<(int x, int y, int z), Object3D>();
+    private List<BvhNode> _flatBvhNodes = new List<BvhNode>();
+    private List<Object3D> _flatTiles = new List<Object3D>();
+    private List<Sprite> _sprites = new List<Sprite>();
+    private List<Sprite> _dynamicSprites = new List<Sprite>();
+    private Dictionary<string, Texture2D> _loadedTextures = new Dictionary<string, Texture2D>();
+    public IModHelper Helper;
+
     public void GenerateMap()
     {
-        Generating = true;
-        Tiles.Clear();
-        spatialGrid.Clear();
-        foreach (var layer in Game1.game1.instanceGameLocation.backgroundLayers)
-        {
-            for (var x = 0; x < layer.Key.Tiles.Array.GetLength(0); x++)
-            {
-                for (var y = 0; y < layer.Key.Tiles.Array.GetLength(1); y++)
-                {
-
-                    Color color = new Color(36, 36, 36, 255);
-                    var tile = layer.Key.Tiles[x, y];
-                    if (tile != null && tile.TileIndex != 0)
-                    {
-                        if (tile.TileIndex == 470 || tile.TileIndex == 271 || tile.TileIndex == 64 ||
-                            tile.Properties.Keys.Count(x => x.Contains("Wall")) > 0)
-                        {
-                            color = new Color(36, 0, 0, 255);
-                            var wtile = new WorldTile()
-                            {
-                                Color = color,
-                                Position = new Vector3(x * 64, 0 * 64, y * 64),
-                                Size = new Vector3(64.0f, 128.0f, 64.0f)
-                            };
-                        }
-                        else if (tile.Properties.Count == 0 || tile.Properties.Keys.Count(x => x.Contains("Floor")) > 0)
-                        {
-                            var wtile = new WorldTile()
-                            {
-                                Color = color,
-                                Position = new Vector3(x * 64, 0 * 64, y * 64),
-                                Size = new Vector3(64.0f, 64.0f, 64.0f)
-                            };
-
-                            Tiles.Add(wtile);
-                            AddTileToGrid(wtile);
-                        }
-                    }
-                }
-            }
-        }
-
+        _3dObjects.Clear();
+        _loadedTextures.Clear();
+        
         foreach (var layer in Game1.game1.instanceGameLocation.frontLayers)
         {
             for (var x = 0; x < layer.Key.Tiles.Array.GetLength(0); x++)
@@ -95,21 +86,74 @@ public class Map
                             tile.Properties.Keys.Count(a => a.Contains("Wall")) > 0)
                         {
                             color = new Color(36, 0, 0, 255);
-                            var wtile = new WorldTile()
+                            if (!_loadedTextures.TryGetValue(tile.TileSheet.ImageSource, out var texture))
+                            {
+                                texture = Helper.GameContent.Load<Texture2D>(tile.TileSheet.ImageSource);
+                                _loadedTextures.Add(tile.TileSheet.ImageSource, texture);
+                            }
+                            
+                            var tileRect = tile.TileSheet.GetTileImageBounds(tile.TileIndex);
+                            var wtile = new Object3D()
                             {
                                 Color = color,
                                 Position = new Vector3(x * 64, 0 * 64, y * 64),
-                                Size = new Vector3(64.0f, 128.0f, 64.0f)
+                                Size = new Vector3(64.0f, 128.0f, 64.0f),
+                                Texture = texture,
+                                ObjectType = ObjectType.Tile,
+                                SourceRectangle = new Rectangle(new Point(tileRect.X, tileRect.Y), new Point(tileRect.Width, tileRect.Height)),
+                                TileIndex = tile.TileIndex
                             };
 
-                            Tiles.Add(wtile);
-                            AddTileToGrid(wtile);
+                            _3dObjects.TryAdd((x,1,y), wtile);
                         }
                     }
                 }
             }
         }
+         
+        foreach (var layer in Game1.game1.instanceGameLocation.map.Layers)
+         {
+             if (!layer.Id.Contains("Path"))
+                 continue;
+             
+            for (var x = 0; x < layer.Tiles.Array.GetLength(0); x++)
+            {
+                for (var y = 0; y < layer.Tiles.Array.GetLength(1); y++)
+                {
 
+                    Color color = new Color(36, 36, 36, 255);
+                    var tile = layer.Tiles[x, y];
+                    if (tile != null && tile.TileIndex != 0)
+                    {
+                        if (tile.TileIndex == 165 || tile.TileIndex == 163 || tile.TileIndex == 162 ||
+                            tile.TileIndex == 160 || tile.TileIndex == 167 ||
+                            tile.Properties.Keys.Count(a => a.Contains("Wall")) > 0)
+                        {
+                            color = new Color(36, 0, 0, 255);
+                            if (!_loadedTextures.TryGetValue(tile.TileSheet.ImageSource, out var texture))
+                            {
+                                texture = Helper.GameContent.Load<Texture2D>(tile.TileSheet.ImageSource);
+                                _loadedTextures.Add(tile.TileSheet.ImageSource, texture);
+                            }
+                            
+                            var tileRect = tile.TileSheet.GetTileImageBounds(tile.TileIndex);
+                            var wtile = new Object3D()
+                            {
+                                Color = color,
+                                Position = new Vector3(x * 64, 0 * 64, y * 64),
+                                Size = new Vector3(64.0f, 128.0f, 64.0f),
+                                Texture = texture,
+                                ObjectType = ObjectType.Tile,
+                                SourceRectangle = new Rectangle(new Point(tileRect.X, tileRect.Y), new Point(tileRect.Width, tileRect.Height)),
+                                TileIndex = tile.TileIndex
+                            };
+
+                            _3dObjects.TryAdd((x,0,y), wtile);
+                        }
+                    }
+                }
+            }
+        }
         if (Game1.game1.instanceGameLocation.waterTiles != null)
         {
             Color waterColor = new Color((int)Game1.game1.instanceGameLocation.waterColor.R,
@@ -120,56 +164,194 @@ public class Map
                 {
                     if (Game1.game1.instanceGameLocation.waterTiles.waterTiles[x, y].isWater)
                     {
-                        var wtile = new WorldTile()
+                        var wtile = new Object3D()
                         {
                             Color = waterColor,
                             Position = new Vector3(x * 64, 0 * 64, y * 64),
-                            Size = new Vector3(64.0f, 64.0f,64.0f)
+                            Size = new Vector3(64.0f, 64.0f,64.0f),
+                            ObjectType = ObjectType.Tile,
+                            SourceRectangle = new Rectangle(0, 0, 64, 64),
+                            Texture = null
                         };
 
-                        Tiles.Add(wtile);
-                        AddTileToGrid(wtile);
+                        _3dObjects.TryAdd((x,0, y), wtile);
                     }
                 }
             }
         }
+        
+        //if(Game1.game1.instanceGameLocation.map.)
 
         foreach (var building in Game1.game1.instanceGameLocation.buildings)
         {
             if (building == null)
                 continue;
-            for (int tX = 0; tX < building.tilesWide.Value; tX++)
-            for (int tY = 0; tY < building.tilesHigh.Value; tY++)
-            {
-                var wtile = new WorldTile()
-                {
-                    Color = new Color(145, 113, 81, 255),
-                    Position = new Vector3((building.tileX.Value + tX) * 64, 1 * 32, (building.tileY.Value + tY) * 64),
-                    Size = new Vector3(64.0f, 128.0f, 64.0f)
-                };
 
-                Tiles.Add(wtile);
-                AddTileToGrid(wtile);
-            }
+            // Create a new Object3D for each building
+            var buildingPosition = new Vector3((building.tileX.Value - 1) * 64 + (float)building.tilesWide.Value * 64 / 2,
+                (float)building.tilesHigh.Value * 64 / 2,
+                (building.tileY.Value - 1) * 64 + (float)building.tilesHigh.Value * 64 / 2);
+            //new Vector3((building.tileX.Value - building.tilesWide.Value * 64 / 2) * 64, 1 * 32, (building.tileY.Value - building.tilesHigh.Value * 64 / 2) * 64),
+            var buildingObject = new Object3D()
+            {
+                Position = buildingPosition,
+                Size = new Vector3(building.tilesWide.Value * 64,
+                    (building.tilesHigh.Value + (building.buildingType.Contains("house") ? 1 : 0)) * 64,
+                    (building.tilesHigh.Value - (building.buildingType.Contains("house") ? 2 : 0)) * 64),
+                Texture = building.texture.Value, // Use the building's texture
+                SourceRectangle = building.getSourceRect(), // Use the building's source rectangle
+                Color = Color.SandyBrown // Default color
+            };
+
+            _3dObjects.TryAdd((building.tileX.Value,1, building.tileY.Value), buildingObject); // Add to the Object3D list
+        }
+        
+        foreach (var buildingLayer in Game1.game1.instanceGameLocation.map.Layers)
+        {
+            if (!buildingLayer.Id.Contains("Building"))
+                continue;
+/*
+            // Create a new Object3D for each building
+            var buildingPosition = new Vector3((building.tileX.Value - 1) * 64 + (float)building.tilesWide.Value * 64 / 2,
+                (float)building.tilesHigh.Value * 64 / 2,
+                (building.tileY.Value - 1) * 64 + (float)building.tilesHigh.Value * 64 / 2);
+            //new Vector3((building.tileX.Value - building.tilesWide.Value * 64 / 2) * 64, 1 * 32, (building.tileY.Value - building.tilesHigh.Value * 64 / 2) * 64),
+            var buildingObject = new Object3D()
+            {
+                Position = buildingPosition,
+                Size = new Vector3(building.tilesWide.Value * 64,
+                    (building.tilesHigh.Value + (building.buildingType.Contains("house") ? 1 : 0)) * 64,
+                    (building.tilesHigh.Value - (building.buildingType.Contains("house") ? 2 : 0)) * 64),
+                Texture = building.texture.Value, // Use the building's texture
+                SourceRectangle = building.getSourceRect(), // Use the building's source rectangle
+                Color = Color.SandyBrown // Default color
+            };
+
+            _3dObjects.TryAdd((building.tileX.Value, building.tileY.Value), buildingObject); // Add to the Object3D list*/
         }
 
         foreach (var furniture in Game1.game1.instanceGameLocation.furniture)
         {
+            if (furniture == null || furniture.furniture_type.Value != 12)
+                continue;
+
+            ParsedItemData dataOrErrorItem1 = ItemRegistry.GetDataOrErrorItem(furniture.QualifiedItemId);
+            var wtile = new Object3D()
+            {
+                Color = new Color(92, 46, 0, 255),
+                Position = new Vector3((furniture.TileLocation.X) * 64, 0,
+                    (furniture.TileLocation.Y) * 64),
+                Size = new Vector3(64.0f * ((float)furniture.boundingBox.Width / 64),
+                    64.0f,
+                    64.0f * ((float)furniture.boundingBox.Height / 64)),
+                ObjectType = ObjectType.Tile,
+                SourceRectangle = furniture.sourceRect.Value,
+                Texture = dataOrErrorItem1.GetTexture()
+            };
+
+            _3dObjects.TryAdd(((int)furniture.TileLocation.X, 1, (int)furniture.TileLocation.Y), wtile);
+
+        }
+
+        foreach (var tf in Game1.game1.instanceGameLocation.terrainFeatures.Values)
+        {
+            if (tf != null)
+            {
+                Object3D wtile = new Object3D();
+                if (tf is HoeDirt)
+                    wtile = new Object3D()
+                    {
+                        Color = new Color(41, 25, 5, 255),
+                        Position = new Vector3((tf.Tile.X) * 64, 0, (tf.Tile.Y) * 64),
+                        Size = new Vector3(64.0f, 64.0f, 64.0f),
+                        ObjectType = ObjectType.Tile,
+                        SourceRectangle = new Rectangle(0, 0, 64, 64),
+                        Texture = null
+                    };
+
+                _3dObjects.TryAdd(((int)tf.Tile.X, 0, (int)tf.Tile.Y), wtile);
+            }
+        }
+        
+        foreach (var layer in Game1.game1.instanceGameLocation.backgroundLayers)
+        {
+            for (var x = 0; x < layer.Key.Tiles.Array.GetLength(0); x++)
+            {
+                for (var y = 0; y < layer.Key.Tiles.Array.GetLength(1); y++)
+                {
+
+                    Color color = new Color(36, 36, 36, 255);
+                    var tile = layer.Key.Tiles[x, y];
+                    color = new Color(36, 0, 0, 255);
+                    if (tile == null)
+                        continue;
+                    
+                    if (!_loadedTextures.TryGetValue(tile.TileSheet.ImageSource, out var texture))
+                    {
+                        texture =  Helper.GameContent.Load<Texture2D>(tile.TileSheet.ImageSource);
+                        _loadedTextures.Add(tile.TileSheet.ImageSource, texture);
+                    }
+                            
+                    var tileRect = tile.TileSheet.GetTileImageBounds(tile.TileIndex);
+                    if (tile != null && tile.TileIndex != 0)
+                    {
+                        if (tile.TileIndex == 470 || tile.TileIndex == 271 || tile.TileIndex == 64 ||
+                            tile.Properties.Keys.Count(x => x.Contains("Wall")) > 0)
+                        {
+                            color = new Color(36, 0, 0, 255);
+                            var wtile = new Object3D()
+                            {
+                                Color = color,
+                                Position = new Vector3(x * 64, 0 * 64, y * 64),
+                                Size = new Vector3(64.0f, 128.0f, 64.0f),
+                                ObjectType = ObjectType.Tile,
+                                Texture = texture,
+                                SourceRectangle = new Rectangle(new Point(tileRect.X, tileRect.Y), new Point(tileRect.Width, tileRect.Height)),
+                                TileIndex = tile.TileIndex
+                                
+                            };
+                            _3dObjects.TryAdd((x,0,y), wtile);
+                        }
+                        else if (tile.Properties.Count == 0 || tile.Properties.Keys.Count(x => x.Contains("Floor")) > 0)
+                        {
+                            var wtile = new Object3D()
+                            {
+                                Color = color,
+                                Position = new Vector3(x * 64, 0 * 64, y * 64),
+                                Size = new Vector3(64.0f, 64.0f, 64.0f),
+                                Texture = texture,
+                                ObjectType = ObjectType.Tile,
+                                SourceRectangle = new Rectangle(new Point(tileRect.X, tileRect.Y), new Point(tileRect.Width, tileRect.Height)),
+                                TileIndex = tile.TileIndex
+                            };
+
+                            _3dObjects.TryAdd((x,0,y), wtile);
+                        }
+                    }
+                }
+            }
+        }
+        _flatTiles = new List<Object3D>(_3dObjects.Values);
+        _flatBvhNodes = new List<BvhNode>();
+        ConstructBvh(0, _flatTiles.Count);
+        GenerateStaticSprites();
+    }
+
+    public void GenerateStaticSprites()
+    {
+        _sprites.Clear();
+        foreach (var furniture in Game1.game1.instanceGameLocation.furniture)
+        {
             if (furniture == null)
                 continue;
-            for (int tX = 0; tX < (furniture.boundingBox.Width / 64); tX++)
-            for (int tY = 0; tY < (furniture.boundingBox.Height / 64); tY++)
-            {
-                var wtile =new WorldTile()
-                {
-                    Color = new Color(92, 46, 0, 255),
-                    Position = new Vector3((furniture.TileLocation.X + tX) * 64, 1 * 32,
-                        (furniture.TileLocation.Y + tY) * 64),
-                    Size = new Vector3(64.0f, 32.0f, 64.0f)
-                };
 
-                Tiles.Add(wtile);
-                AddTileToGrid(wtile);
+            if (furniture.furniture_type.Value != 12)
+            {
+                var sprite = new Sprite(
+                    new Vector3((furniture.TileLocation.X) * 64, 1 * furniture.furniture_type.Value == 13 ? 128 : 64, (furniture.TileLocation.Y) * 64),
+                    new Vector2(0,furniture.boundingBox.Height),
+                    new Vector2(furniture.boundingBox.Width, furniture.boundingBox.Height), furniture);
+                _sprites.Add(sprite);
             }
         }
 
@@ -177,96 +359,150 @@ public class Map
         {
             if (wObject == null)
                 continue;
-            for (int tX = 0; tX < (wObject.boundingBox.Width / 64); tX++)
-            for (int tY = 0; tY < (wObject.boundingBox.Height / 64); tY++)
-            {
-                var wtile =new WorldTile()
-                {
-                    Color = new Color(0, 0, 255, 255),
-                    Position = new Vector3((wObject.TileLocation.X + tX) * 64, 1 * 32,
-                        (wObject.TileLocation.Y + tY) * 64),
-                    Size = new Vector3(32.0f, 16.0f, 32.0f)
-                };
 
-                Tiles.Add(wtile);
-                AddTileToGrid(wtile);
-            }
+            var sprite = new Sprite(
+                new Vector3((wObject.TileLocation.X) * 64, 32,
+                    (wObject.TileLocation.Y) * 64),
+                new Vector2(0,wObject.boundingBox.Height),
+                new Vector2(wObject.boundingBox.Width, wObject.boundingBox.Height), wObject);
+            _sprites.Add(sprite);
+
         }
 
         foreach (var tf in Game1.game1.instanceGameLocation.terrainFeatures.Values)
         {
             if (tf != null)
             {
-                WorldTile wtile = new WorldTile();
+                Sprite sprite = new Sprite();
                 if (tf is Tree)
-                    wtile = new WorldTile()
-                    {
-                        Color = new Color(41, 25, 5, 255),
-                        Position = new Vector3((tf.Tile.X) * 64, 1 * 32, (tf.Tile.Y) * 64),
-                        Size = new Vector3(64.0f, 128.0f, 64.0f)
-                    };
-                else if (tf is HoeDirt { crop: null })
-                    wtile = new WorldTile()
-                    {
-                        Color = new Color(41, 25, 5, 255),
-                        Position = new Vector3((tf.Tile.X) * 64, 0, (tf.Tile.Y) * 64),
-                        Size = new Vector3(64.0f, 64.0f, 64.0f)
-                    };
+                    sprite = new Sprite(
+                        new Vector3((tf.Tile.X) * 64, 1 * ((tf as Tree).stump.Value ? 32 : (tf as Tree).growthStage.Value < 2 ? 32 : 128), (tf.Tile.Y) * 64),
+                        Vector2.Zero,
+                        new Vector2(tf.getBoundingBox().Width, tf.getBoundingBox().Height), tf);
                 else if (tf is HoeDirt { crop: not null })
-                    wtile = new WorldTile()
-                    {
-                        Color = new Color(0, 255, 0, 255),
-                        Position = new Vector3((tf.Tile.X) * 64, 1 * 32, (tf.Tile.Y) * 64),
-                        Size = new Vector3(32.0f, 32.0f, 32.0f)
-                    };
+                    sprite = new Sprite(
+                        new Vector3((tf.Tile.X) * 64, 1 * 32, (tf.Tile.Y) * 64),
+                        Vector2.Zero,
+                        new Vector2(tf.getBoundingBox().Width, tf.getBoundingBox().Height), tf);
 
-                Tiles.Add(wtile);
-                AddTileToGrid(wtile);
+                _sprites.Add(sprite);
             }
         }
         
-        // Define the grid size based on the world dimensions
-        gridSize = new Point(
-            (int)Math.Ceiling(Game1.game1.instanceGameLocation.map.DisplayWidth / (float)GridCellSize),
-            (int)Math.Ceiling(Game1.game1.instanceGameLocation.map.DisplayHeight / (float)GridCellSize)
-        );
-        
-        Generating = false;
     }
-    private void AddTileToGrid(WorldTile tile)
-    {
-        BoundingBox box = tile.GetBoundingBox();
-        Point minCell = GetCellCoordinate(box.Min);
-        Point maxCell = GetCellCoordinate(box.Max);
 
-        for (int x = minCell.X; x <= maxCell.X; x++)
+    public void GenerateDynamicSprites()
+    {
+        _dynamicSprites.Clear();
+        foreach (var npc in Game1.game1.instanceGameLocation.characters)
         {
-            for (int y = minCell.Y; y <= maxCell.Y; y++)
-            {
-                Point cell = new Point(x, y);
-                if (!spatialGrid.ContainsKey(cell))
-                {
-                    spatialGrid[cell] = new List<WorldTile>();
-                }
-                spatialGrid[cell].Add(tile);
-            }
+            if (npc == null)
+                continue;
+
+            var sprite = new Sprite(
+                new Vector3((npc.Tile.X) * 64, 64, (npc.Tile.Y) * 64),
+                new Vector2(0, npc.GetBoundingBox().Height),
+                new Vector2(npc.GetBoundingBox().Width, npc.GetBoundingBox().Height), npc);
+            _dynamicSprites.Add(sprite);
+        }
+        foreach(var chara in Game1.game1.instanceGameLocation.farmers)
+        {
+            if (chara == null)
+                continue;
+            
+            var sprite = new Sprite(
+                new Vector3((chara.Tile.X) * 64, 64, (chara.Tile.Y) * 64),
+                new Vector2(0, chara.GetBoundingBox().Height),
+                new Vector2(chara.GetBoundingBox().Width, chara.GetBoundingBox().Height), chara);
+            _dynamicSprites.Add(sprite);
         }
     }
-
-    private Point GetCellCoordinate(Vector3 position)
+    private int ConstructBvh(int start, int end)
     {
-        int cellX = (int)(position.X / GridCellSize);
-        int cellY = (int)(position.Z / GridCellSize);
-        return new Point(cellX, cellY);
+        BvhNode node = new BvhNode();
+        node.Start = start;
+        node.Count = end - start;
+
+        // Compute the bounding box for the current set of tiles
+        node.BoundingBox = ComputeBoundingBox(_flatTiles, start, end);
+
+        int nodeIndex = _flatBvhNodes.Count;
+        _flatBvhNodes.Add(node);
+
+        // If this is a leaf node, return
+        if (node.Count <= 2)
+        {
+            node.LeftChild = -1;
+            node.RightChild = -1;
+            _flatBvhNodes[nodeIndex] = node; // Update node with children
+            return nodeIndex;
+        }
+
+        // Determine axis to split on (using longest axis for example)
+        Vector3 size = node.BoundingBox.Max - node.BoundingBox.Min;
+        int axis = size.X > size.Y && size.X > size.Z ? 0 : (size.Y > size.Z ? 1 : 2);
+
+        // Sort tiles based on the chosen axis
+        _flatTiles.Sort(start, end - start, Comparer<Object3D>.Create((a, b) =>
+        {
+            return axis switch
+            {
+                0 => a.Position.X.CompareTo(b.Position.X),
+                1 => a.Position.Y.CompareTo(b.Position.Y),
+                _ => a.Position.Z.CompareTo(b.Position.Z),
+            };
+        }));
+
+        // Split the tiles into two groups and recurse
+        int mid = start + node.Count / 2;
+        node.LeftChild = ConstructBvh(start, mid);
+        node.RightChild = ConstructBvh(mid, end);
+
+        // Update the current node with child information
+        _flatBvhNodes[nodeIndex] = node;
+
+        return nodeIndex;
     }
 
-    public Dictionary<Point, List<WorldTile>> GetSpatialGrid()
+    private BoundingBox ComputeBoundingBox(List<Object3D> tiles, int start, int end)
     {
-        return spatialGrid;
+        Vector3 min = new Vector3(float.MaxValue);
+        Vector3 max = new Vector3(float.MinValue);
+
+        for (int i = start; i < end; i++)
+        {
+            Object3D tile = tiles[i];
+            BoundingBox tileBox = tile.GetBoundingBox();
+
+            min = Vector3.Min(min, tileBox.Min);
+            max = Vector3.Max(max, tileBox.Max);
+        }
+
+        return new BoundingBox(min, max);
     }
 
-    public Point GetGridSize()
+    public List<BvhNode> GetBvhNodes()
     {
-        return gridSize;
+        return _flatBvhNodes;
+    }
+
+    public List<Object3D> GetFlatTiles()
+    {
+        return _flatTiles;
+    }
+
+    public List<Sprite> GetSprites()
+    {
+        return _sprites;
+    }
+
+    public List<Sprite> GetDynamicSprites()
+    {
+        return _dynamicSprites;
+    }
+    
+    public Dictionary<string, Texture2D> GetLoadedTextures()
+    {
+        return _loadedTextures;
     }
 }

@@ -8,111 +8,128 @@ namespace StardewValley3D.StardewInterfaces;
 public class Character
 {
     private Vector2 WorldPosition => Game1.player.Position;
-    private int _currentRotation = 0;
-    public readonly Camera Camera;
-
+    public int WorldRotation => Game1.player.FacingDirection;
+    public readonly Camera3D Camera;
+    private Vector2 _mInput;
+    
     public Character()
     {
-        Camera = new(new Vector3(WorldPosition.X, 62.0f, WorldPosition.Y), 
-            Camera.CreateLookAt(new Vector3(WorldPosition.X, 62.0f, WorldPosition.Y), new Vector3(WorldPosition.X, 62.0f, WorldPosition.Y + 10.0f), Vector3.UnitY),
-            Camera.CreatePerspectiveFieldOfView((float)Math.PI / 4, 800f / 600f, 0.1f, 100f));
-
+        Camera = new Camera3D(new Vector3(WorldPosition.X, 62.0f, WorldPosition.Y));
     }
 
     public void UpdateCamera()
     {
         Camera.Position = new Vector3(WorldPosition.X, 62.0f, WorldPosition.Y);
-        Vector3 forward = Vector3.Zero;
-    
-        if (_currentRotation == 0)
-            forward = new Vector3(0, 0, -1); // Looking towards the negative Z direction
-        else if (_currentRotation == 1)
-            forward = new Vector3(1, 0, 0);  // Looking towards the positive X direction
-        else if (_currentRotation == 2)
-            forward = new Vector3(0, 0, 1);  // Looking towards the positive Z direction
-        else if (_currentRotation == 3)
-            forward = new Vector3(-1, 0, 0); // Looking towards the negative X direction
-
-        Vector3 target = Camera.Position + forward;
-        Camera.ViewMatrix = Camera.CreateLookAt(Camera.Position, target, Vector3.Up);
+        Camera.UpdateCamera(Game1.currentGameTime);
     }
 
-    private bool _justEd;
-    private bool _justQd;
-
     public void DoInput()
-    {
-        Vector2 mInput = new(Game1.input.GetKeyboardState().IsKeyDown(Keys.D) ? 1 : Game1.input.GetKeyboardState().IsKeyDown(Keys.A) ? -1 : 0.0f,
-            Game1.input.GetKeyboardState().IsKeyDown(Keys.W) ? 1 : Game1.input.GetKeyboardState().IsKeyDown(Keys.S) ? -1 : 0.0f);
-        if (mInput.X != 0 || mInput.Y != 0)
-            Game1.freezeControls = true;
-        else
-            Game1.freezeControls = false;
+    {       
+        Game1.input.IgnoreKeys(new []{Keys.A, Keys.D, Keys.W, Keys.S});
+        var kbState = Keyboard.GetState();
+        _mInput = new(kbState.IsKeyDown(Keys.D) ? 1 :kbState.IsKeyDown(Keys.A) ? -1 : 0.0f,
+            kbState.IsKeyDown(Keys.W) ? 1 : kbState.IsKeyDown(Keys.S) ? -1 : 0.0f);
+    }
+
+    public void DoMovement()
+    {        
+        if (Game1.CurrentEvent != null && !Game1.CurrentEvent.playerControlSequence)
+            return;
+        if (Game1.player.UsingTool)
+            return;
         
         Game1.player.movementDirections.Clear();
         Game1.player.xVelocity = 0;
         Game1.player.yVelocity = 0;
-        if (Game1.player.canMove)
+        
+        if (!Game1.player.isSitting.Value && Game1.player.canMove && _mInput.X != 0 || _mInput.Y != 0)
         {
+            Vector3 inputDirection = new Vector3(_mInput.Y, 0, -_mInput.X);
 
-            if (Game1.input.GetKeyboardState().IsKeyDown(Keys.E) && !_justEd)
+            // Create rotation matrix based on yaw and pitch
+            Matrix rotationMatrix = Matrix.CreateFromYawPitchRoll(Camera.Yaw, Camera.Pitch, 0);
+
+            // Transform input direction to world space using the rotation matrix
+            Vector3 transformedDirection = Vector3.Transform(inputDirection, rotationMatrix);
+            
+            // Normalize the transformed direction to maintain consistent speed
+            if (transformedDirection.Length() > 0)
+                transformedDirection.Normalize();
+            
+            // Set the player's velocity based on the transformed direction
+            var speed = Game1.player.Speed / 1.5f;
+            Game1.player.xVelocity = transformedDirection.X * speed;
+            Game1.player.yVelocity = transformedDirection.Z * speed;
+
+            // Update player facing direction based on the transformed direction
+            GameChecks();
+        }
+        
+        Game1.player.faceDirection(GetFacingDirectionFromCamera());
+        if(Game1.player.Sprite.currentAnimation.Count <= 0)
+            Game1.player.animateInFacingDirection(Game1.currentGameTime);
+    }
+    private void GameChecks()
+    {
+        Warp w = Game1.currentLocation.isCollidingWithWarp(Game1.player.nextPosition(Game1.player.FacingDirection), Game1.player);
+        if (w != null)
+        {
+            if (Game1.eventUp && Game1.CurrentEvent != null)
             {
-                _currentRotation = _currentRotation + 1 > 3 ? 0 : _currentRotation + 1;
-                _justEd = true;
+                bool? isFestival = Game1.CurrentEvent?.isFestival;
+                if (isFestival.HasValue && isFestival.GetValueOrDefault())
+                {
+                    Game1.CurrentEvent.TryStartEndFestivalDialogue(Game1.player);
+                    goto label_5;
+                }
             }
-            else if(_justEd && Game1.input.GetKeyboardState().IsKeyUp(Keys.E))
-            {
-                _justEd = false;
-            }
+            Game1.player.warpFarmer(w, Game1.player.FacingDirection);
+            label_5:
+            return;
+        }
+    }
+    
+    private int GetFacingDirection(Vector3 direction)
+    {
+        // Use the camera's forward and right vectors
+        Vector3 forward = Camera.GetForward();
+        Vector3 right = Camera.GetRight();
 
-            if (Game1.input.GetKeyboardState().IsKeyDown(Keys.Q) && !_justQd)
-            {
-                _currentRotation = _currentRotation - 1 < 0 ? 3 : _currentRotation - 1;
-                _justQd = true;
-            }
-            else if(_justQd && Game1.input.GetKeyboardState().IsKeyUp(Keys.Q))
-            {
-                _justQd = false;
-            }
+        // Calculate the dot products between the input direction and the camera's axes
+        float forwardDot = Vector3.Dot(direction, forward);
+        float rightDot = Vector3.Dot(direction, right);
 
-            Game1.player.FacingDirection = _currentRotation;
-
-            switch (_currentRotation)
-            {
-                case 0:
-                    Game1.player.xVelocity = mInput.X;
-                    Game1.player.yVelocity = mInput.Y;
-                    break;
-                case 2:
-                    Game1.player.xVelocity = -mInput.X;
-                    Game1.player.yVelocity = -mInput.Y;
-                    break;
-                case 1:
-                    Game1.player.xVelocity = mInput.Y;
-                    Game1.player.yVelocity = -mInput.X;
-                    break;
-                case 3:
-                    Game1.player.xVelocity = -mInput.Y;
-                    Game1.player.yVelocity = mInput.X;
-                    break;
-            }
-
-            if (Game1.player.xVelocity < 0)
-                Game1.player.movementDirections.Add(3);
-            if (Game1.player.xVelocity > 0)
-                Game1.player.movementDirections.Add(1);
-            if (Game1.player.yVelocity < 0)
-                Game1.player.movementDirections.Add(2);
-            if (Game1.player.yVelocity > 0)
-                Game1.player.movementDirections.Add(0);
-
-            Game1.player.FacingDirection = _currentRotation;
+        // Determine the facing direction based on the greatest dot product
+        if (MathF.Abs(forwardDot) > MathF.Abs(rightDot))
+        {
+            // The direction is more forward/backward
+            return forwardDot > 0 ? 0 : 2; // 0 for Forward, 2 for Backward
         }
         else
         {
-            Game1.eventUp = false;
+            // The direction is more left/right
+            return rightDot > 0 ? 1 : 3; // 1 for Right, 3 for Left
         }
-        
-        //Game1.player.FacingDirection = Camera.Target.z;
     }
+    
+    private int GetFacingDirectionFromCamera()
+    {
+        // Get the camera's yaw angle in radians
+        float yaw = Camera.Yaw;
+
+        // Normalize the yaw to the range [0, 2 * PI]
+        yaw = (yaw + MathHelper.TwoPi) % MathHelper.TwoPi;
+
+        // Determine the facing direction based on the yaw angle
+        // Dividing the circle into four quadrants
+        if (yaw >= 7 * MathHelper.PiOver4 || yaw < MathHelper.PiOver4)
+            return 1; // Right (East)
+        else if (yaw >= MathHelper.PiOver4 && yaw < 3 * MathHelper.PiOver4)
+            return 2; // Forward (North)
+        else if (yaw >= 3 * MathHelper.PiOver4 && yaw < 5 * MathHelper.PiOver4)
+            return 3; // Left (West)
+        else
+            return 0; // Backward (South)
+    }
+    
 }

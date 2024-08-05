@@ -1,8 +1,5 @@
-﻿using ILGPU;
-using ILGPU.Runtime;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StardewValley3D.StardewInterfaces;
 
 namespace StardewValley3D.Rendering;
 

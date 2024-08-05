@@ -9,43 +9,190 @@ namespace StardewValley3D.Rendering;
 
 class Renderer
 {
-    private Framebuffer framebuffer;
-    private Camera camera;
-    private Context _context;
+    private Framebuffer _framebuffer;
+    private Camera3D _camera;
     private Accelerator _accelerator;
-    private Action<Index2D, ArrayView<WorldTile>, ArrayView<Color>, Matrix, Matrix, Vector2, Vector3> _loadedKernel;
+
+    private Action<Index2D, ArrayView<BvhNode>, ArrayView<Object3DDataOnly>, ArrayView<Color>,
+        ArrayView<Light>, ArrayView<Color>, Matrix, Matrix, Vector2, Vector3> _loadedKernel;
+    
+
+    private MemoryBuffer1D<Color, Stride1D.Dense> _deviceInput;
     private MemoryBuffer1D<Color, Stride1D.Dense> _deviceOutput;
 
-    public Renderer(Framebuffer framebuffer, Camera camera)
+    private MemoryBuffer1D<BvhNode, Stride1D.Dense>? _bvhBuffer;
+    private MemoryBuffer1D<Object3DDataOnly, Stride1D.Dense>? _tilesBuffer;
+    private MemoryBuffer1D<Light, Stride1D.Dense>? _lightsBuffer;
+    private MemoryBuffer1D<Color, Stride1D.Dense>? _ColorBuffer;
+    private List<Color> concatenatedTextures = new List<Color>();
+    private Dictionary<string, int> textureStartIndices = new Dictionary<string, int>();
+    private bool GenDataOnce = false;
+
+    public Renderer(Framebuffer framebuffer, Camera3D camera)
     {
-        this.framebuffer = framebuffer;
-        this.camera = camera;
-        _context = Context.CreateDefault();
-        _accelerator = _context.GetPreferredDevice(preferCPU: false).CreateAccelerator(_context);
+        _framebuffer = framebuffer;
+        _camera = camera;
+        Context context = Context.Create(builder => builder.Default().EnableAlgorithms());
+        _accelerator = context.GetPreferredDevice(preferCPU: false).CreateAccelerator(context);
         _loadedKernel =
-            _accelerator
-                .LoadAutoGroupedStreamKernel<Index2D, ArrayView<WorldTile>, ArrayView<Color>, Matrix, Matrix, Vector2,
-                    Vector3>(Kernel);
+            _accelerator.LoadAutoGroupedStreamKernel<Index2D, ArrayView<BvhNode>, ArrayView<Object3DDataOnly>, ArrayView<Color>, ArrayView<Light>,
+                    ArrayView<Color>, Matrix, Matrix, Vector2, Vector3>(Kernel);
+
         _deviceOutput = _accelerator.Allocate1D<Color>(framebuffer.Texture.Width * framebuffer.Texture.Height);
-
     }
 
-    public void RenderA(WorldTile[] tiles)
+    public void ClearTextures()
     {
-        framebuffer.Clear(Color.Black);
-        MemoryBuffer1D<WorldTile, Stride1D.Dense> gpuTiles = _accelerator.Allocate1D(tiles);
-        _loadedKernel(new Index2D(Game1.game1.screen.Width, Game1.game1.screen.Height), gpuTiles.View,
-            _deviceOutput.View, camera.ViewMatrix, camera.ProjectionMatrix,
-            new Vector2(Game1.game1.screen.Width, Game1.game1.screen.Height), camera.Position);
+        concatenatedTextures.Clear();
+        textureStartIndices.Clear();
+        _ColorBuffer?.Dispose();
+        GenDataOnce = false;
+    }
+    
+    public void RenderA(List<BvhNode> bvhNodes, List<Object3D> tiles, Dictionary<string, Texture2D> Textures,  List<Light> lights,
+        List<Sprite> sprites, List<Sprite> dynamicSprites)
+    {
+        if (Game1.CurrentEvent != null && !Game1.CurrentEvent.playerControlSequence)
+            return;
+        
+        // Allocate memory for flattened data
+        _bvhBuffer = _accelerator.Allocate1D(bvhNodes.ToArray());
+        _lightsBuffer = _accelerator.Allocate1D(lights.ToArray());
+        List<Object3DDataOnly> objectDataList = new List<Object3DDataOnly>();
+
+        foreach (var obj in tiles)
+        {
+            int textureStartIndex = -1;
+            
+            if (obj.Texture != null && !textureStartIndices.TryGetValue(obj.Texture.Name + obj.TileIndex, out textureStartIndex))
+            {
+                // Texture not added yet, add it
+                textureStartIndex = concatenatedTextures.Count;
+                var (texColor, objectData) = obj.GetObject3DDataOnly(true);
+                concatenatedTextures.AddRange(texColor);
+                textureStartIndices[obj.Texture.Name + obj.TileIndex] = textureStartIndex;
+            }
+
+            var objectDataOnly = obj.GetObject3DDataOnly(false).Item2;
+            objectDataOnly.TextureStartIndex = textureStartIndex;
+            objectDataList.Add(objectDataOnly);
+        }
+
+        if (concatenatedTextures.Count == 0)
+        {
+            concatenatedTextures.Add(new Color(0, 0, 0, 0));
+            objectDataList.Add(new Object3DDataOnly(Vector3.Zero, new Color(0,0,0,0), Vector3.Zero, 0, 0, ObjectType.Object, 0));
+        }
+
+        if (!GenDataOnce)
+        {
+            _ColorBuffer = _accelerator.Allocate1D(concatenatedTextures.ToArray());
+            GenDataOnce = true;
+        }
+
+        _tilesBuffer = _accelerator.Allocate1D(objectDataList.ToArray());
+        
+        _framebuffer.Clear(Color.Black);
+        _loadedKernel(
+            new Index2D(_framebuffer.Texture.Width, _framebuffer.Texture.Height),
+            _bvhBuffer.View,
+            _tilesBuffer.View,
+            _ColorBuffer.View,
+            _lightsBuffer.View,
+            _deviceOutput.View,
+            _camera.ViewMatrix,
+            _camera.ProjectionMatrix,
+            new Vector2(_framebuffer.Texture.Width, _framebuffer.Texture.Height),
+            _camera.Position
+        );
         _accelerator.Synchronize();
-        framebuffer.ColorBuffer = _deviceOutput.GetAsArray1D();
-        framebuffer.UpdateTexture();
-        gpuTiles.Dispose();
+        _framebuffer.ColorBuffer = _deviceOutput.GetAsArray1D();
+
+        _bvhBuffer.Dispose();
+        _tilesBuffer.Dispose();
+        _lightsBuffer.Dispose();
+        _framebuffer.UpdateTexture();
+
+        
+        Game1.spriteBatch.Draw(_framebuffer.Texture, Game1.game1.screen.Bounds, Color.White);
+        RenderSpritesOnCPU(sprites);
+        RenderSpritesOnCPU(dynamicSprites);
     }
 
+    private void RenderSpritesOnCPU(List<Sprite> sprites)
+    {
+        // List to hold tuples of sprites and their distances
+        List<(Sprite sprite, float distance)> spriteDistances = new List<(Sprite, float)>();
 
-    static void Kernel(Index2D index, ArrayView<WorldTile> tiles, ArrayView<Color> output, Matrix viewMatrix,
-        Matrix projectionMatrix, Vector2 screenSize, Vector3 cameraPosition)
+        foreach (var sprite in sprites)
+        {
+            // Calculate ray direction from the camera to the sprite position
+            Vector3 toSprite = sprite.Position - _camera.Position;
+            Vector3 rayDirection = Vector3.Normalize(toSprite);
+
+            // Check if the ray from the camera intersects the sprite using the forward vector
+            if (RayIntersectsSprite(_camera.Position, rayDirection, sprite, _camera.GetForward(), out float distance))
+            {
+                // Add sprite and its distance to the list
+                spriteDistances.Add((sprite, distance));
+            }
+        }
+
+        // Sort sprites by distance in descending order (furthest first)
+        spriteDistances.Sort((a, b) => b.distance.CompareTo(a.distance));
+
+        // Render sprites in sorted order
+        foreach (var (sprite, distance) in spriteDistances)
+        {
+            var spritePos = sprite.Position;
+            //if (character.WorldRotation == 2)
+            //    spritePos -= new Vector3(0, 0, sprite.Offset.Y);
+
+            // Compute the screen position of the sprite for rendering
+            Vector3 screenPos = Game1.game1.GraphicsDevice.Viewport.Project(
+                spritePos,
+                _camera.ProjectionMatrix,
+                _camera.ViewMatrix,
+                Matrix.Identity
+            );
+
+            // Check if the sprite is in front of the camera
+            if (screenPos.Z < 0 || screenPos.Z > 100)
+                continue; // Skip rendering if the sprite is behind the camera
+
+            // Compute the depth and scale of the object.
+            float scale = 512 / distance; // Adjust scale based on distance
+
+            // Draw the sprite
+            if (sprite.Texture == null || sprite.SourceRect == null)
+                continue;
+            Game1.spriteBatch.Draw(sprite.Texture, new Vector2(screenPos.X, screenPos.Y), sprite.SourceRect,
+                new Color(255, 255, 255, 255), 0,
+                Vector2.Zero, new Vector2(scale * 2, scale * 2), SpriteEffects.None, distance);
+        }
+    }
+
+    private bool RayIntersectsSprite(Vector3 rayOrigin, Vector3 rayDirection, Sprite sprite, Vector3 cameraForward,
+        out float distance)
+    {
+        BoundingBox box = sprite.GetBoundingBox();
+
+        // Perform ray-box intersection test
+        if (!RayIntersectsAabb(rayOrigin, rayDirection, box.Min, box.Max, out distance))
+        {
+            return false;
+        }
+
+        // Ensure the sprite is in front of the camera using the forward vector
+        Vector3 toSprite = sprite.Position - rayOrigin;
+        float dotProduct = Vector3.Dot(cameraForward, toSprite);
+
+        return dotProduct > 0;
+    }
+
+    static void Kernel(Index2D index, ArrayView<BvhNode> bvhNodes, ArrayView<Object3DDataOnly> tiles,
+        ArrayView<Color> concatenatedTextures, ArrayView<Light> lights, ArrayView<Color> output,
+        Matrix viewMatrix, Matrix projectionMatrix, Vector2 screenSize, Vector3 cameraPosition)
     {
         int screenWidth = (int)screenSize.X;
         int screenHeight = (int)screenSize.Y;
@@ -72,51 +219,192 @@ class Renderer
         // Initialize ray intersection parameters
         bool hit = false;
         float minDistance = float.MaxValue;
-        Color pixelColor= new Color(0, 0, 0, 0);
+        Color finalColor = new Color(0, 0, 0, 0);
+        Vector3 hitPoint = default;
+        Vector3 normal = default;
+        Vector3 viewDirection = default;
 
-        // Check for intersections with all tiles
-        for (int i = 0; i < tiles.Length; i++)
+        // Traverse BVH for Object3D instances
+        int[] stack = new int[64]; // Fixed size stack for BVH traversal
+        int stackSize = 0;
+        stack[stackSize++] = 0; // Start with the root node
+
+        while (stackSize > 0)
         {
-            WorldTile tile = tiles[i];
+            int nodeIndex = stack[--stackSize];
+            BvhNode node = bvhNodes[nodeIndex];
 
-            // AABB intersection test
-            Vector3 boxMin = tile.Position - tile.Size / 2.0f;
-            Vector3 boxMax = tile.Position + tile.Size / 2.0f;
+            // Check intersection with the node's bounding box
+            if (!RayIntersectsAabb(cameraPosition, rayDirection, node.BoundingBox.Min, node.BoundingBox.Max, out _))
+                continue;
 
-            if (RayIntersectsAABB(cameraPosition, rayDirection, boxMin, boxMax, out float distance))
+            if (node.IsLeaf)
             {
-                if (distance < minDistance)
+                // Test intersection with each object in the leaf node
+                for (int i = node.Start; i < node.Start + node.Count; i++)
                 {
-                    hit = true;
-                    minDistance = distance;
-                    pixelColor = tile.Color;
+                    Object3DDataOnly obj = tiles[i];
+                    Vector3 boxMin = obj.Position - obj.Size / 2.0f;
+                    Vector3 boxMax = obj.Position + obj.Size / 2.0f;
+
+                    if (RayIntersectsAabb(cameraPosition, rayDirection, boxMin, boxMax, out float distance))
+                    {
+                        if (distance < minDistance)
+                        {
+                            // Determine the hit point and normal
+                            hitPoint = cameraPosition + rayDirection * distance;
+                            normal = obj.GetNormal(hitPoint);
+
+                            // Calculate texture coordinates for the hit point
+                            Vector2 uv = CalculateTextureCoordinates(hitPoint, boxMin, boxMax, normal);
+
+                            // Clamp UV coordinates to avoid out-of-bounds access
+                            uv = Vector2.Clamp(uv, Vector2.Zero, Vector2.One);
+
+                            if (obj.IsCorrectDirection(normal))
+                            {
+                                // Sample the texture
+                                Color textureColor = obj.TextureStartIndex == -1
+                                    ? obj.Color
+                                    : SampleTexture(concatenatedTextures, uv, obj.TextureWidth, obj.TextureHeight,
+                                        obj.TextureStartIndex);
+
+                                // Apply lighting for the textured side
+                                viewDirection = Vector3.Normalize(cameraPosition - hitPoint);
+                                finalColor = CalculateLighting(textureColor, hitPoint, normal, viewDirection, lights);
+                            }
+                            else
+                            {
+                                // Apply a basic shading for non-textured sides
+                                Color baseColor = obj.Color;
+                                viewDirection = Vector3.Normalize(cameraPosition - hitPoint);
+                                finalColor = CalculateLighting(baseColor, hitPoint, normal, viewDirection, lights);
+                            }
+
+                            hit = true;
+                            minDistance = distance;
+                        }
+                    }
                 }
+            }
+            else
+            {
+                // Add child nodes to the stack for further traversal
+                if (node.RightChild != -1)
+                    stack[stackSize++] = node.RightChild;
+                if (node.LeftChild != -1)
+                    stack[stackSize++] = node.LeftChild;
             }
         }
 
-        // Set the output color if hit
-        if (hit)
-        {
-            int outputIndex = index.Y * screenWidth + index.X;
-            output[outputIndex] = pixelColor;
-        }
-        else
-        {
-            int outputIndex = index.Y * screenWidth + index.X;
-            output[outputIndex] = new Color(0, 0, 0, 0);
-        }
+        // Write the final color to the output buffer if a hit was detected
+        int outputIndex = index.Y * screenWidth + index.X;
+        output[outputIndex] = hit ? finalColor : new Color(0, 0, 0, 0);
     }
 
-    static bool RayIntersectsAABB(Vector3 rayOrigin, Vector3 rayDirection, Vector3 boxMin, Vector3 boxMax,
+    static Vector2 CalculateTextureCoordinates(Vector3 hitPoint, Vector3 boxMin, Vector3 boxMax, Vector3 normal)
+    {
+        float u = 0.0f;
+        float v = 0.0f;
+
+        // Determine which face was hit based on the normal vector
+        if (normal == Vector3.Up || normal == Vector3.Down)
+        {
+            // Top or Bottom face
+            u = (hitPoint.X - boxMin.X) / (boxMax.X - boxMin.X);
+            v = (hitPoint.Z - boxMin.Z) / (boxMax.Z - boxMin.Z);
+        }
+        else if (normal == Vector3.Left || normal == Vector3.Right)
+        {
+            // Left or Right face
+            u = (hitPoint.Z - boxMin.Z) / (boxMax.Z - boxMin.Z);
+            v = (hitPoint.Y - boxMin.Y) / (boxMax.Y - boxMin.Y);
+        }
+        else if (normal == Vector3.Forward || normal == Vector3.Backward)
+        {
+            
+            // Front or Back face
+            u = (hitPoint.X - boxMin.X) / (boxMax.X - boxMin.X);
+            v = (hitPoint.Y - boxMin.Y) / (boxMax.Y - boxMin.Y);
+            if (normal == Vector3.Forward)
+                v = 1 - v;
+        }
+
+        return new Vector2(u, v);
+    }
+
+    static Color SampleTexture(ArrayView<Color> texture, Vector2 uv, int textureWidth, int textureHeight, int textureIndex)
+    {
+        // Calculate the pixel position in the texture
+        int x = (int)(uv.X * textureWidth) % textureWidth;
+        int y = (int)(uv.Y * textureHeight) % textureHeight;
+
+        // Retrieve the color from the texture at the calculated position
+        if (x < 0 || y < 0 || x >= textureWidth || y >= textureHeight)
+            return new Color(0, 0, 0, 0); // Default color if out of bounds
+
+        int index = y * textureWidth + x;
+        return texture[textureIndex + index];
+    }
+
+    static Color CalculateLighting(Color textureColor, Vector3 hitPoint, Vector3 normal, Vector3 viewDirection,
+        ArrayView<Light> lights)
+    {
+        // Constants for the lighting model
+        float ambientStrength = 0.2f;
+        float diffuseStrength = 0.6f;
+        float specularStrength = 0.4f;
+        int shininess = 32;
+
+        // Initialize color components
+        Vector3 ambientColor = new Vector3(textureColor.R, textureColor.G, textureColor.B) * ambientStrength;
+        Vector3 diffuseColor = Vector3.Zero;
+        Vector3 specularColor = Vector3.Zero;
+
+        // Calculate lighting for each light source
+        for (int i = 0; i < lights.Length; i++)
+        {
+            Light light = lights[i];
+            Vector3 lightDir = light.IsDirectional == 1
+                ? Vector3.Normalize(-light.Direction)
+                : Vector3.Normalize(light.Position - hitPoint);
+
+            // No attenuation for directional lights
+            float attenuation = light.IsDirectional == 1
+                ? 1.0f
+                : 1.0f / (1.0f + 0.1f * Vector3.Distance(light.Position, hitPoint));
+
+            // Diffuse lighting
+            float diff = Math.Max(Vector3.Dot(normal, lightDir), 0.0f);
+            diffuseColor += new Vector3(textureColor.R, textureColor.G, textureColor.B) * diff * diffuseStrength *
+                            light.Intensity * attenuation;
+
+            // Specular lighting
+            Vector3 reflectDir = Vector3.Reflect(-lightDir, normal);
+            float spec = (float)Math.Pow(Math.Max(Vector3.Dot(viewDirection, reflectDir), 0.0f), shininess);
+            specularColor += new Vector3(light.Color.R, light.Color.G, light.Color.B) * spec * specularStrength *
+                             light.Intensity * attenuation;
+        }
+
+        // Combine all lighting components
+        Vector3 finalColor = ambientColor + diffuseColor + specularColor;
+        finalColor = Vector3.Clamp(finalColor / 255.0f, Vector3.Zero, Vector3.One);
+
+        return new Color(finalColor.X, finalColor.Y, finalColor.Z, textureColor.A);
+    }
+
+    static bool RayIntersectsAabb(Vector3 rayOrigin, Vector3 rayDirection, Vector3 boxMin, Vector3 boxMax,
         out float distance)
     {
-        float tmin = (boxMin.X - rayOrigin.X) / rayDirection.X;
-        float tmax = (boxMax.X - rayOrigin.X) / rayDirection.X;
+        const float epsilon = 1e-6f; // Small epsilon to handle precision issues
+
+        float tmin = (boxMin.X - rayOrigin.X) / (Math.Abs(rayDirection.X) > epsilon ? rayDirection.X : epsilon);
+        float tmax = (boxMax.X - rayOrigin.X) / (Math.Abs(rayDirection.X) > epsilon ? rayDirection.X : epsilon);
 
         if (tmin > tmax) (tmin, tmax) = (tmax, tmin);
 
-        float tymin = (boxMin.Y - rayOrigin.Y) / rayDirection.Y;
-        float tymax = (boxMax.Y - rayOrigin.Y) / rayDirection.Y;
+        float tymin = (boxMin.Y - rayOrigin.Y) / (Math.Abs(rayDirection.Y) > epsilon ? rayDirection.Y : epsilon);
+        float tymax = (boxMax.Y - rayOrigin.Y) / (Math.Abs(rayDirection.Y) > epsilon ? rayDirection.Y : epsilon);
 
         if (tymin > tymax) (tymin, tymax) = (tymax, tymin);
 
@@ -126,14 +414,11 @@ class Renderer
             return false;
         }
 
-        if (tymin > tmin)
-            tmin = tymin;
+        if (tymin > tmin) tmin = tymin;
+        if (tymax < tmax) tmax = tymax;
 
-        if (tymax < tmax)
-            tmax = tymax;
-
-        float tzmin = (boxMin.Z - rayOrigin.Z) / rayDirection.Z;
-        float tzmax = (boxMax.Z - rayOrigin.Z) / rayDirection.Z;
+        float tzmin = (boxMin.Z - rayOrigin.Z) / (Math.Abs(rayDirection.Z) > epsilon ? rayDirection.Z : epsilon);
+        float tzmax = (boxMax.Z - rayOrigin.Z) / (Math.Abs(rayDirection.Z) > epsilon ? rayDirection.Z : epsilon);
 
         if (tzmin > tzmax) (tzmin, tzmax) = (tzmax, tzmin);
 
@@ -143,14 +428,13 @@ class Renderer
             return false;
         }
 
-        if (tzmin > tmin)
-            tmin = tzmin;
-
-        if (tzmax < tmax)
-            tmax = tzmax;
+        if (tzmin > tmin) tmin = tzmin;
+        if (tzmax < tmax) tmax = tzmax;
 
         distance = tmin;
 
-        return (tmin < tmax) && (tmax > 0);
+        return tmax > epsilon; // Ensure intersection is in front of the ray origin
     }
+    
+    
 }
