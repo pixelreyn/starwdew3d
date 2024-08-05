@@ -14,12 +14,12 @@ public class Character
     
     public Character()
     {
-        Camera = new Camera3D(new Vector3(WorldPosition.X, 62.0f, WorldPosition.Y));
+        Camera = new Camera3D(new Vector3(WorldPosition.X, 92.0f, WorldPosition.Y));
     }
 
     public void UpdateCamera()
     {
-        Camera.Position = new Vector3(WorldPosition.X, 62.0f, WorldPosition.Y);
+        Camera.Position = new Vector3(WorldPosition.X, 92.0f, WorldPosition.Y);
         Camera.UpdateCamera(Game1.currentGameTime);
     }
 

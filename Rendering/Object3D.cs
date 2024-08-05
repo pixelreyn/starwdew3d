@@ -15,26 +15,37 @@ public struct Object3D
 {
     public Vector3 Position;
     public Texture2D? Texture;
-    public int TileIndex;
+    public string TileIndex;
     public Rectangle SourceRectangle;
     public ObjectType ObjectType;
     public Color Color;
     public Vector3 Size;
-
+    private static Dictionary<String, int> stringIntDict = new Dictionary<string, int>();
+    private static int nextId = 0;
     public (Color[], Object3DDataOnly) GetObject3DDataOnly(bool GetColor)
     {
+        if (TileIndex == null)
+            return (new Color[] { Color }, new Object3DDataOnly(Position, Color, Size, 0, 0, ObjectType, 0));
+        
+        if (!stringIntDict.TryGetValue(TileIndex, out var id))
+        {
+            id = nextId++;
+            stringIntDict.Add(TileIndex, id);
+        }
+        
         if (Texture != null && GetColor)
         {
             
             var texColor = new Color[SourceRectangle.Width * SourceRectangle.Height];
             Texture.GetData(0, SourceRectangle, texColor, 0, SourceRectangle.Width * SourceRectangle.Height);
+
             return (texColor,
-                new Object3DDataOnly(Position, Color, Size, SourceRectangle.Width, SourceRectangle.Height, ObjectType, TileIndex));
+                new Object3DDataOnly(Position, Color, Size, SourceRectangle.Width, SourceRectangle.Height, ObjectType, id));
         }
         else
         {
             return (new Color[] { Color },
-                new Object3DDataOnly(Position, Color, Size, SourceRectangle.Width, SourceRectangle.Height, ObjectType, TileIndex));
+                new Object3DDataOnly(Position, Color, Size, SourceRectangle.Width, SourceRectangle.Height, ObjectType, id));
         }
     } 
     
@@ -43,6 +54,11 @@ public struct Object3D
         Vector3 min = Position - Size / 2.0f;
         Vector3 max = Position + Size / 2.0f;
         return new BoundingBox(min, max);
+    }
+    public static void ResetIndex()
+    {
+        nextId = 0;
+        stringIntDict.Clear();
     }
 }
 
@@ -118,4 +134,5 @@ public struct Object3DDataOnly
                 return false;
         }
     }
+    
 }

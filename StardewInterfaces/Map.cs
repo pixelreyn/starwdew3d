@@ -60,7 +60,6 @@ public class Map
     public ConcurrentDictionary<(int x, int y, int z), Object3D> _3dObjects = new ConcurrentDictionary<(int x, int y, int z), Object3D>();
     private List<BvhNode> _flatBvhNodes = new List<BvhNode>();
     private List<Object3D> _flatTiles = new List<Object3D>();
-    private List<Sprite> _sprites = new List<Sprite>();
     private List<Sprite> _dynamicSprites = new List<Sprite>();
     private Dictionary<string, Texture2D> _loadedTextures = new Dictionary<string, Texture2D>();
     public IModHelper Helper;
@@ -96,12 +95,12 @@ public class Map
                             var wtile = new Object3D()
                             {
                                 Color = color,
-                                Position = new Vector3(x * 64, 0 * 64, y * 64),
+                                Position = new Vector3(x * 64, 64, y * 64),
                                 Size = new Vector3(64.0f, 128.0f, 64.0f),
                                 Texture = texture,
-                                ObjectType = ObjectType.Tile,
+                                ObjectType = ObjectType.Object,
                                 SourceRectangle = new Rectangle(new Point(tileRect.X, tileRect.Y), new Point(tileRect.Width, tileRect.Height)),
-                                TileIndex = tile.TileIndex
+                                TileIndex = tile.TileIndex.ToString()
                             };
 
                             _3dObjects.TryAdd((x,1,y), wtile);
@@ -145,7 +144,7 @@ public class Map
                                 Texture = texture,
                                 ObjectType = ObjectType.Tile,
                                 SourceRectangle = new Rectangle(new Point(tileRect.X, tileRect.Y), new Point(tileRect.Width, tileRect.Height)),
-                                TileIndex = tile.TileIndex
+                                TileIndex = tile.TileIndex.ToString()
                             };
 
                             _3dObjects.TryAdd((x,0,y), wtile);
@@ -200,7 +199,9 @@ public class Map
                     (building.tilesHigh.Value - (building.buildingType.Contains("house") ? 2 : 0)) * 64),
                 Texture = building.texture.Value, // Use the building's texture
                 SourceRectangle = building.getSourceRect(), // Use the building's source rectangle
-                Color = Color.SandyBrown // Default color
+                Color = Color.SandyBrown, // Default color
+                ObjectType = ObjectType.Building,
+                TileIndex = building.buildingType.Value
             };
 
             _3dObjects.TryAdd((building.tileX.Value,1, building.tileY.Value), buildingObject); // Add to the Object3D list
@@ -246,7 +247,8 @@ public class Map
                     64.0f * ((float)furniture.boundingBox.Height / 64)),
                 ObjectType = ObjectType.Tile,
                 SourceRectangle = furniture.sourceRect.Value,
-                Texture = dataOrErrorItem1.GetTexture()
+                Texture = dataOrErrorItem1.GetTexture(),
+                TileIndex = furniture.furniture_type.Value.ToString()
             };
 
             _3dObjects.TryAdd(((int)furniture.TileLocation.X, 1, (int)furniture.TileLocation.Y), wtile);
@@ -266,9 +268,20 @@ public class Map
                         Size = new Vector3(64.0f, 64.0f, 64.0f),
                         ObjectType = ObjectType.Tile,
                         SourceRectangle = new Rectangle(0, 0, 64, 64),
-                        Texture = null
+                        Texture = null,
+                        TileIndex = "HoeDirt"
                     };
-
+                else if (tf is Tree)
+                    wtile = new Object3D()
+                    {
+                        Color = new Color(41, 25, 5, 255),
+                        Position = new Vector3((tf.Tile.X) * 64, 0, (tf.Tile.Y) * 64),
+                        Size = new Vector3(64.0f, 64.0f, 64.0f),
+                        ObjectType = ObjectType.Tile,
+                        SourceRectangle = new Rectangle(0, 0, 64, 64),
+                        Texture = null,
+                        TileIndex = "TreeDirt"
+                    };
                 _3dObjects.TryAdd(((int)tf.Tile.X, 0, (int)tf.Tile.Y), wtile);
             }
         }
@@ -304,10 +317,10 @@ public class Map
                                 Color = color,
                                 Position = new Vector3(x * 64, 0 * 64, y * 64),
                                 Size = new Vector3(64.0f, 128.0f, 64.0f),
-                                ObjectType = ObjectType.Tile,
+                                ObjectType = ObjectType.Object,
                                 Texture = texture,
                                 SourceRectangle = new Rectangle(new Point(tileRect.X, tileRect.Y), new Point(tileRect.Width, tileRect.Height)),
-                                TileIndex = tile.TileIndex
+                                TileIndex = tile.TileIndex.ToString()
                                 
                             };
                             _3dObjects.TryAdd((x,0,y), wtile);
@@ -322,7 +335,7 @@ public class Map
                                 Texture = texture,
                                 ObjectType = ObjectType.Tile,
                                 SourceRectangle = new Rectangle(new Point(tileRect.X, tileRect.Y), new Point(tileRect.Width, tileRect.Height)),
-                                TileIndex = tile.TileIndex
+                                TileIndex = tile.TileIndex.ToString()
                             };
 
                             _3dObjects.TryAdd((x,0,y), wtile);
@@ -331,15 +344,15 @@ public class Map
                 }
             }
         }
+        GenerateStaticSprites();
+        
         _flatTiles = new List<Object3D>(_3dObjects.Values);
         _flatBvhNodes = new List<BvhNode>();
         ConstructBvh(0, _flatTiles.Count);
-        GenerateStaticSprites();
     }
 
     public void GenerateStaticSprites()
     {
-        _sprites.Clear();
         foreach (var furniture in Game1.game1.instanceGameLocation.furniture)
         {
             if (furniture == null)
@@ -347,11 +360,20 @@ public class Map
 
             if (furniture.furniture_type.Value != 12)
             {
-                var sprite = new Sprite(
-                    new Vector3((furniture.TileLocation.X) * 64, 1 * furniture.furniture_type.Value == 13 ? 128 : 64, (furniture.TileLocation.Y) * 64),
-                    new Vector2(0,furniture.boundingBox.Height),
-                    new Vector2(furniture.boundingBox.Width, furniture.boundingBox.Height), furniture);
-                _sprites.Add(sprite);
+                ParsedItemData dataOrErrorItem1 = ItemRegistry.GetDataOrErrorItem(furniture.QualifiedItemId);
+                var texture = dataOrErrorItem1.GetTexture();
+                var sourceRect = dataOrErrorItem1.GetSourceRect();
+                var wObject = new Object3D()
+                {
+                    Color = Color.Red,
+                    ObjectType = ObjectType.Object,
+                    Position = new Vector3((furniture.TileLocation.X) * 64, 64, (furniture.TileLocation.Y) * 64),
+                    Size = new Vector3(furniture.boundingBox.Width, furniture.boundingBox.Height, furniture.boundingBox.Height),
+                    SourceRectangle = sourceRect,
+                    Texture = texture,
+                    TileIndex = furniture.furniture_type.Value.ToString() + furniture.Name
+                };
+                _3dObjects.TryAdd(((int)furniture.TileLocation.X, 1, (int)furniture.TileLocation.Y), wObject);
             }
         }
 
@@ -359,13 +381,21 @@ public class Map
         {
             if (wObject == null)
                 continue;
-
-            var sprite = new Sprite(
-                new Vector3((wObject.TileLocation.X) * 64, 32,
-                    (wObject.TileLocation.Y) * 64),
-                new Vector2(0,wObject.boundingBox.Height),
-                new Vector2(wObject.boundingBox.Width, wObject.boundingBox.Height), wObject);
-            _sprites.Add(sprite);
+            
+            ParsedItemData dataOrErrorItem1 = ItemRegistry.GetDataOrErrorItem(wObject.QualifiedItemId);
+            var texture = dataOrErrorItem1.GetTexture();
+            var sourceRect = dataOrErrorItem1.GetSourceRect();
+            var wObject3d = new Object3D()
+            {
+                Color = Color.Red,
+                ObjectType = ObjectType.Object,
+                Position = new Vector3((wObject.TileLocation.X) * 64, 48, (wObject.TileLocation.Y) * 64),
+                Size = new Vector3(wObject.boundingBox.Width / 3, wObject.boundingBox.Height / 3, wObject.boundingBox.Width / 3),
+                SourceRectangle = sourceRect,
+                Texture = texture,
+                TileIndex = wObject.ItemId
+            };
+            _3dObjects.TryAdd(((int)wObject.TileLocation.X, 1, (int)wObject.TileLocation.Y), wObject3d);
 
         }
 
@@ -373,19 +403,71 @@ public class Map
         {
             if (tf != null)
             {
-                Sprite sprite = new Sprite();
+                var sprite = new Object3D();
                 if (tf is Tree)
-                    sprite = new Sprite(
-                        new Vector3((tf.Tile.X) * 64, 1 * ((tf as Tree).stump.Value ? 32 : (tf as Tree).growthStage.Value < 2 ? 32 : 128), (tf.Tile.Y) * 64),
-                        Vector2.Zero,
-                        new Vector2(tf.getBoundingBox().Width, tf.getBoundingBox().Height), tf);
-                else if (tf is HoeDirt { crop: not null })
-                    sprite = new Sprite(
-                        new Vector3((tf.Tile.X) * 64, 1 * 32, (tf.Tile.Y) * 64),
-                        Vector2.Zero,
-                        new Vector2(tf.getBoundingBox().Width, tf.getBoundingBox().Height), tf);
+                {
+                    var tree = tf as Tree;
+                    Rectangle sourceRect;
+                    var TreeSize = new Vector3(tf.getBoundingBox().Width, tf.getBoundingBox().Height * 2, tf.getBoundingBox().Width);
+                    if (tree.growthStage.Value < 5)
+                    {
+                        Rectangle rectangle;
+                        switch (tree.growthStage.Value)
+                        {
+                            case 0:
+                                rectangle = new Rectangle(32, 128, 16, 16);
+                                break;
+                            case 1:
+                                rectangle = new Rectangle(0, 128, 16, 16);
+                                break;
+                            case 2:
+                                rectangle = new Rectangle(16, 128, 16, 16);
+                                break;
+                            default:
+                                rectangle = new Rectangle(0, 96, 16, 32);
+                                break;
+                        }
 
-                _sprites.Add(sprite);
+                        sourceRect = rectangle;
+                    }
+                    else
+                    {
+                        sourceRect = !tree.stump.Value ? Tree.treeTopSourceRect : Tree.stumpSourceRect;
+                    }
+
+                    TreeSize.Y =  Math.Clamp(TreeSize.Y * tree.growthStage.Value / 6, 16, 128);
+                    var yPos = 48 + (92 - 48) * Math.Clamp(tree.growthStage.Value, 0, 6) / 6;
+                        
+                    sprite = new Object3D()
+                    {
+                        Position = new Vector3((tf.Tile.X) * 64, yPos, (tf.Tile.Y) * 64),
+                        Color = Color.Green,
+                        ObjectType = ObjectType.Object,
+                        Size = TreeSize,
+                        Texture = (tf as Tree).texture.Value,
+                        SourceRectangle = sourceRect,
+                        TileIndex = (tf as Tree).treeType.Value + tree.growthStage.Value + tree.stump.Value
+                    };
+                }
+                else if (tf is HoeDirt { crop: not null })
+                {
+                    var crop = (tf as HoeDirt).crop;
+                    
+                    crop.updateDrawMath(tf.Tile);
+                    
+                    sprite = new Object3D()
+                    {
+                        Position = new Vector3((tf.Tile.X) * 64, 56, (tf.Tile.Y) * 64),
+                        Color = Color.Green,
+                        ObjectType = ObjectType.Object,
+                        Size = new Vector3(tf.getBoundingBox().Width, tf.getBoundingBox().Height, tf.getBoundingBox().Width),
+                        Texture = crop.DrawnCropTexture,
+                        SourceRectangle = crop.sourceRect,
+                        TileIndex = crop.indexOfHarvest.Value.ToString() + crop.currentPhase.Value.ToString()
+                    };
+                }
+
+                _3dObjects.TryAdd(((int)tf.Tile.X, 1, (int)tf.Tile.Y), sprite);
             }
         }
         
@@ -490,11 +572,7 @@ public class Map
     {
         return _flatTiles;
     }
-
-    public List<Sprite> GetSprites()
-    {
-        return _sprites;
-    }
+    
 
     public List<Sprite> GetDynamicSprites()
     {

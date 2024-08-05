@@ -14,7 +14,7 @@ class Renderer
     private Accelerator _accelerator;
 
     private Action<Index2D, ArrayView<BvhNode>, ArrayView<Object3DDataOnly>, ArrayView<Color>,
-        ArrayView<Light>, ArrayView<Color>, Matrix, Matrix, Vector2, Vector3> _loadedKernel;
+        ArrayView<Light>, ArrayView<Color>, ArrayView<float>, Matrix, Matrix, Vector2, Vector3> _loadedKernel;
     
 
     private MemoryBuffer1D<Color, Stride1D.Dense> _deviceInput;
@@ -23,9 +23,11 @@ class Renderer
     private MemoryBuffer1D<BvhNode, Stride1D.Dense>? _bvhBuffer;
     private MemoryBuffer1D<Object3DDataOnly, Stride1D.Dense>? _tilesBuffer;
     private MemoryBuffer1D<Light, Stride1D.Dense>? _lightsBuffer;
-    private MemoryBuffer1D<Color, Stride1D.Dense>? _ColorBuffer;
+    private MemoryBuffer1D<Color, Stride1D.Dense>? _colorBuffer;
+    private MemoryBuffer1D<float, Stride1D.Dense>? _depthBuffer;
     private List<Color> concatenatedTextures = new List<Color>();
     private Dictionary<string, int> textureStartIndices = new Dictionary<string, int>();
+    private float[] _cachedDepthBuffer;
     private bool GenDataOnce = false;
 
     public Renderer(Framebuffer framebuffer, Camera3D camera)
@@ -36,21 +38,24 @@ class Renderer
         _accelerator = context.GetPreferredDevice(preferCPU: false).CreateAccelerator(context);
         _loadedKernel =
             _accelerator.LoadAutoGroupedStreamKernel<Index2D, ArrayView<BvhNode>, ArrayView<Object3DDataOnly>, ArrayView<Color>, ArrayView<Light>,
-                    ArrayView<Color>, Matrix, Matrix, Vector2, Vector3>(Kernel);
+                    ArrayView<Color>, ArrayView<float>, Matrix, Matrix, Vector2, Vector3>(Kernel);
 
         _deviceOutput = _accelerator.Allocate1D<Color>(framebuffer.Texture.Width * framebuffer.Texture.Height);
+        _depthBuffer = _accelerator.Allocate1D<float>(framebuffer.Texture.Width * framebuffer.Texture.Height);
+        _cachedDepthBuffer = new float[framebuffer.Texture.Width * framebuffer.Texture.Height];
+        for (int i = 0; i < _cachedDepthBuffer.Length; i++)
+            _cachedDepthBuffer[i] = float.MaxValue;
     }
 
     public void ClearTextures()
     {
         concatenatedTextures.Clear();
         textureStartIndices.Clear();
-        _ColorBuffer?.Dispose();
+        _colorBuffer?.Dispose();
         GenDataOnce = false;
     }
     
-    public void RenderA(List<BvhNode> bvhNodes, List<Object3D> tiles, Dictionary<string, Texture2D> Textures,  List<Light> lights,
-        List<Sprite> sprites, List<Sprite> dynamicSprites)
+    public void RenderA(List<BvhNode> bvhNodes, List<Object3D> tiles, Dictionary<string, Texture2D> Textures,  List<Light> lights, List<Sprite> dynamicSprites)
     {
         if (Game1.CurrentEvent != null && !Game1.CurrentEvent.playerControlSequence)
             return;
@@ -58,6 +63,7 @@ class Renderer
         // Allocate memory for flattened data
         _bvhBuffer = _accelerator.Allocate1D(bvhNodes.ToArray());
         _lightsBuffer = _accelerator.Allocate1D(lights.ToArray());
+        _depthBuffer = _accelerator.Allocate1D(_cachedDepthBuffer);
         List<Object3DDataOnly> objectDataList = new List<Object3DDataOnly>();
 
         foreach (var obj in tiles)
@@ -86,7 +92,7 @@ class Renderer
 
         if (!GenDataOnce)
         {
-            _ColorBuffer = _accelerator.Allocate1D(concatenatedTextures.ToArray());
+            _colorBuffer = _accelerator.Allocate1D(concatenatedTextures.ToArray());
             GenDataOnce = true;
         }
 
@@ -97,9 +103,10 @@ class Renderer
             new Index2D(_framebuffer.Texture.Width, _framebuffer.Texture.Height),
             _bvhBuffer.View,
             _tilesBuffer.View,
-            _ColorBuffer.View,
+            _colorBuffer.View,
             _lightsBuffer.View,
             _deviceOutput.View,
+            _depthBuffer.View,
             _camera.ViewMatrix,
             _camera.ProjectionMatrix,
             new Vector2(_framebuffer.Texture.Width, _framebuffer.Texture.Height),
@@ -112,10 +119,10 @@ class Renderer
         _tilesBuffer.Dispose();
         _lightsBuffer.Dispose();
         _framebuffer.UpdateTexture();
+        _depthBuffer.Dispose();
 
         
         Game1.spriteBatch.Draw(_framebuffer.Texture, Game1.game1.screen.Bounds, Color.White);
-        RenderSpritesOnCPU(sprites);
         RenderSpritesOnCPU(dynamicSprites);
     }
 
@@ -192,6 +199,7 @@ class Renderer
 
     static void Kernel(Index2D index, ArrayView<BvhNode> bvhNodes, ArrayView<Object3DDataOnly> tiles,
         ArrayView<Color> concatenatedTextures, ArrayView<Light> lights, ArrayView<Color> output,
+        ArrayView<float> depthBuffer,
         Matrix viewMatrix, Matrix projectionMatrix, Vector2 screenSize, Vector3 cameraPosition)
     {
         int screenWidth = (int)screenSize.X;
@@ -220,9 +228,6 @@ class Renderer
         bool hit = false;
         float minDistance = float.MaxValue;
         Color finalColor = new Color(0, 0, 0, 0);
-        Vector3 hitPoint = default;
-        Vector3 normal = default;
-        Vector3 viewDirection = default;
 
         // Traverse BVH for Object3D instances
         int[] stack = new int[64]; // Fixed size stack for BVH traversal
@@ -235,7 +240,8 @@ class Renderer
             BvhNode node = bvhNodes[nodeIndex];
 
             // Check intersection with the node's bounding box
-            if (!RayIntersectsAabb(cameraPosition, rayDirection, node.BoundingBox.Min, node.BoundingBox.Max, out _))
+            if (!RayIntersectsAabb(cameraPosition, rayDirection, node.BoundingBox.Min, node.BoundingBox.Max,
+                    out float nodeDistance))
                 continue;
 
             if (node.IsLeaf)
@@ -249,40 +255,29 @@ class Renderer
 
                     if (RayIntersectsAabb(cameraPosition, rayDirection, boxMin, boxMax, out float distance))
                     {
-                        if (distance < minDistance)
+                        // Determine the hit point and normal
+                        Vector3 hitPoint = cameraPosition + rayDirection * distance;
+                        Vector3 normal = obj.GetNormal(hitPoint);
+
+                        // Calculate texture coordinates for the hit point
+                        Vector2 uv = CalculateTextureCoordinates(hitPoint, boxMin, boxMax, normal);
+
+                        // Clamp UV coordinates to avoid out-of-bounds access
+                        uv = Vector2.Clamp(uv, Vector2.Zero, Vector2.One);
+
+                        // Sample the texture
+                        Color textureColor = obj.TextureStartIndex == -1
+                            ? obj.Color
+                            : SampleTexture(concatenatedTextures, uv, obj.TextureWidth, obj.TextureHeight,
+                                obj.TextureStartIndex);
+
+                        if (textureColor.A > 0 && distance < minDistance)
                         {
-                            // Determine the hit point and normal
-                            hitPoint = cameraPosition + rayDirection * distance;
-                            normal = obj.GetNormal(hitPoint);
-
-                            // Calculate texture coordinates for the hit point
-                            Vector2 uv = CalculateTextureCoordinates(hitPoint, boxMin, boxMax, normal);
-
-                            // Clamp UV coordinates to avoid out-of-bounds access
-                            uv = Vector2.Clamp(uv, Vector2.Zero, Vector2.One);
-
-                            if (obj.IsCorrectDirection(normal))
-                            {
-                                // Sample the texture
-                                Color textureColor = obj.TextureStartIndex == -1
-                                    ? obj.Color
-                                    : SampleTexture(concatenatedTextures, uv, obj.TextureWidth, obj.TextureHeight,
-                                        obj.TextureStartIndex);
-
-                                // Apply lighting for the textured side
-                                viewDirection = Vector3.Normalize(cameraPosition - hitPoint);
-                                finalColor = CalculateLighting(textureColor, hitPoint, normal, viewDirection, lights);
-                            }
-                            else
-                            {
-                                // Apply a basic shading for non-textured sides
-                                Color baseColor = obj.Color;
-                                viewDirection = Vector3.Normalize(cameraPosition - hitPoint);
-                                finalColor = CalculateLighting(baseColor, hitPoint, normal, viewDirection, lights);
-                            }
-
-                            hit = true;
+                            // If the texture is not transparent and the object is closer, update the hit parameters
+                            Vector3 viewDirection = Vector3.Normalize(cameraPosition - hitPoint);
+                            finalColor = CalculateLighting(textureColor, hitPoint, normal, viewDirection, lights);
                             minDistance = distance;
+                            hit = true;
                         }
                     }
                 }
@@ -297,9 +292,16 @@ class Renderer
             }
         }
 
-        // Write the final color to the output buffer if a hit was detected
+        // Write the final color to the output buffer if a hit was detected and depth test passes
         int outputIndex = index.Y * screenWidth + index.X;
-        output[outputIndex] = hit ? finalColor : new Color(0, 0, 0, 0);
+        if (hit && minDistance < depthBuffer[outputIndex])
+        {
+            output[outputIndex] = finalColor;
+            depthBuffer[outputIndex] = minDistance;
+        } else if (!hit)
+        {
+            output[outputIndex] = new Color(0, 0, 0, 0);
+        }
     }
 
     static Vector2 CalculateTextureCoordinates(Vector3 hitPoint, Vector3 boxMin, Vector3 boxMax, Vector3 normal)
@@ -319,6 +321,7 @@ class Renderer
             // Left or Right face
             u = (hitPoint.Z - boxMin.Z) / (boxMax.Z - boxMin.Z);
             v = (hitPoint.Y - boxMin.Y) / (boxMax.Y - boxMin.Y);
+            v = 1 - v;
         }
         else if (normal == Vector3.Forward || normal == Vector3.Backward)
         {
@@ -326,8 +329,7 @@ class Renderer
             // Front or Back face
             u = (hitPoint.X - boxMin.X) / (boxMax.X - boxMin.X);
             v = (hitPoint.Y - boxMin.Y) / (boxMax.Y - boxMin.Y);
-            if (normal == Vector3.Forward)
-                v = 1 - v;
+            v = 1 - v;
         }
 
         return new Vector2(u, v);

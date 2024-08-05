@@ -50,7 +50,7 @@ namespace StardewValley3D
             if (_mMap == null || _framebuffer == null || _renderer == null)
                 return;
             _mMap.GenerateDynamicSprites();
-            _renderer.RenderA(_mMap.GetBvhNodes(), _mMap.GetFlatTiles(), _mMap.GetLoadedTextures(), new List<Light>(new [] {_worldLight}), _mMap.GetSprites(), _mMap.GetDynamicSprites());
+            _renderer.RenderA(_mMap.GetBvhNodes(), _mMap.GetFlatTiles(), _mMap.GetLoadedTextures(), new List<Light>(new [] {_worldLight}), _mMap.GetDynamicSprites());
         }
 
         private void WorldOnTerrainFeatureListChanged(object? sender, TerrainFeatureListChangedEventArgs e)
@@ -59,6 +59,7 @@ namespace StardewValley3D
                 _mMap.GenerateMap();
             if(_renderer != null)
                 _renderer.ClearTextures();
+            Object3D.ResetIndex();
         }
 
         private void WorldOnObjectListChanged(object? sender, ObjectListChangedEventArgs e)
@@ -67,6 +68,7 @@ namespace StardewValley3D
                 _mMap.GenerateMap();
             if(_renderer != null)
                 _renderer.ClearTextures();
+            Object3D.ResetIndex();
         }
 
         private void WorldOnDebrisListChanged(object? sender, DebrisListChangedEventArgs e)
@@ -75,6 +77,7 @@ namespace StardewValley3D
                 _mMap.GenerateMap();
             if(_renderer != null)
                 _renderer.ClearTextures();
+            Object3D.ResetIndex();
         }
 
         private void PlayerOnWarped(object? sender, WarpedEventArgs e)
@@ -84,6 +87,7 @@ namespace StardewValley3D
                 _mMap.GenerateMap();
             if(_renderer != null)
                 _renderer.ClearTextures();
+            Object3D.ResetIndex();
         }
         
         private void GameLoopOnSaveLoaded(object? sender, SaveLoadedEventArgs e)
