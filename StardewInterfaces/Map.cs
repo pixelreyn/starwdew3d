@@ -69,15 +69,18 @@ public class Map
         _3dObjects.Clear();
         _loadedTextures.Clear();
         
-        foreach (var layer in Game1.game1.instanceGameLocation.frontLayers)
+        foreach (var layer in Game1.game1.instanceGameLocation.map.Layers)
         {
-            for (var x = 0; x < layer.Key.Tiles.Array.GetLength(0); x++)
+            if (!layer.Id.Contains("Front"))
+                continue;
+            
+            for (var x = 0; x < layer.Tiles.Array.GetLength(0); x++)
             {
-                for (var y = 0; y < layer.Key.Tiles.Array.GetLength(1); y++)
+                for (var y = 0; y < layer.Tiles.Array.GetLength(1); y++)
                 {
 
                     Color color = new Color(36, 36, 36, 255);
-                    var tile = layer.Key.Tiles[x, y];
+                    var tile = layer.Tiles[x, y];
                     if (tile != null && tile.TileIndex != 0)
                     {
                         if (tile.TileIndex == 165 || tile.TileIndex == 163 || tile.TileIndex == 162 ||
@@ -211,24 +214,41 @@ public class Map
         {
             if (!buildingLayer.Id.Contains("Building"))
                 continue;
-/*
-            // Create a new Object3D for each building
-            var buildingPosition = new Vector3((building.tileX.Value - 1) * 64 + (float)building.tilesWide.Value * 64 / 2,
-                (float)building.tilesHigh.Value * 64 / 2,
-                (building.tileY.Value - 1) * 64 + (float)building.tilesHigh.Value * 64 / 2);
-            //new Vector3((building.tileX.Value - building.tilesWide.Value * 64 / 2) * 64, 1 * 32, (building.tileY.Value - building.tilesHigh.Value * 64 / 2) * 64),
-            var buildingObject = new Object3D()
-            {
-                Position = buildingPosition,
-                Size = new Vector3(building.tilesWide.Value * 64,
-                    (building.tilesHigh.Value + (building.buildingType.Contains("house") ? 1 : 0)) * 64,
-                    (building.tilesHigh.Value - (building.buildingType.Contains("house") ? 2 : 0)) * 64),
-                Texture = building.texture.Value, // Use the building's texture
-                SourceRectangle = building.getSourceRect(), // Use the building's source rectangle
-                Color = Color.SandyBrown // Default color
-            };
 
-            _3dObjects.TryAdd((building.tileX.Value, building.tileY.Value), buildingObject); // Add to the Object3D list*/
+            for (var x = 0; x < buildingLayer.Tiles.Array.GetLength(0); x++)
+            {
+                for (var y = 0; y < buildingLayer.Tiles.Array.GetLength(1); y++)
+                {
+
+                    Color color = new Color(36, 36, 36, 255);
+                    var tile = buildingLayer.Tiles[x, y];
+                    if (tile != null && tile.TileIndex != 0)
+                    {
+                        color = new Color(36, 0, 0, 255);
+                        if (!_loadedTextures.TryGetValue(tile.TileSheet.ImageSource, out var texture))
+                        {
+                            texture = Helper.GameContent.Load<Texture2D>(tile.TileSheet.ImageSource);
+                            _loadedTextures.Add(tile.TileSheet.ImageSource, texture);
+                        }
+
+                        var tileRect = tile.TileSheet.GetTileImageBounds(tile.TileIndex);
+                        var wtile = new Object3D()
+                        {
+                            Color = color,
+                            Position = new Vector3(x * 64, 64, y * 64),
+                            Size = new Vector3(64, 64, 64),
+                            Texture = texture,
+                            ObjectType = ObjectType.Object,
+                            SourceRectangle = new Rectangle(new Point(tileRect.X, tileRect.Y),
+                                new Point(tileRect.Width, tileRect.Height)),
+                            TileIndex = tile.Id + tile.TileIndex.ToString()
+                        };
+
+                        _3dObjects.TryAdd((x, 1, y), wtile);
+
+                    }
+                }
+            }
         }
 
         foreach (var furniture in Game1.game1.instanceGameLocation.furniture)
@@ -325,7 +345,7 @@ public class Map
                             };
                             _3dObjects.TryAdd((x,0,y), wtile);
                         }
-                        else if (tile.Properties.Count == 0 || tile.Properties.Keys.Count(x => x.Contains("Floor")) > 0)
+                        else
                         {
                             var wtile = new Object3D()
                             {

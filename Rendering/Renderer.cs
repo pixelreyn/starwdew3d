@@ -15,7 +15,7 @@ class Renderer
 
     private Action<Index2D, ArrayView<BvhNode>, ArrayView<Object3DDataOnly>, ArrayView<Color>,
         ArrayView<Light>, ArrayView<Color>, ArrayView<float>, Matrix, Matrix, Vector2, Vector3> _loadedKernel;
-    
+
 
     private MemoryBuffer1D<Color, Stride1D.Dense> _deviceInput;
     private MemoryBuffer1D<Color, Stride1D.Dense> _deviceOutput;
@@ -37,7 +37,9 @@ class Renderer
         Context context = Context.Create(builder => builder.Default().EnableAlgorithms());
         _accelerator = context.GetPreferredDevice(preferCPU: false).CreateAccelerator(context);
         _loadedKernel =
-            _accelerator.LoadAutoGroupedStreamKernel<Index2D, ArrayView<BvhNode>, ArrayView<Object3DDataOnly>, ArrayView<Color>, ArrayView<Light>,
+            _accelerator
+                .LoadAutoGroupedStreamKernel<Index2D, ArrayView<BvhNode>, ArrayView<Object3DDataOnly>, ArrayView<Color>,
+                    ArrayView<Light>,
                     ArrayView<Color>, ArrayView<float>, Matrix, Matrix, Vector2, Vector3>(Kernel);
 
         _deviceOutput = _accelerator.Allocate1D<Color>(framebuffer.Texture.Width * framebuffer.Texture.Height);
@@ -54,12 +56,13 @@ class Renderer
         _colorBuffer?.Dispose();
         GenDataOnce = false;
     }
-    
-    public void RenderA(List<BvhNode> bvhNodes, List<Object3D> tiles, Dictionary<string, Texture2D> Textures,  List<Light> lights, List<Sprite> dynamicSprites)
+
+    public void RenderA(List<BvhNode> bvhNodes, List<Object3D> tiles, Dictionary<string, Texture2D> Textures,
+        List<Light> lights, List<Sprite> dynamicSprites)
     {
         if (Game1.CurrentEvent != null && !Game1.CurrentEvent.playerControlSequence)
             return;
-        
+
         // Allocate memory for flattened data
         _bvhBuffer = _accelerator.Allocate1D(bvhNodes.ToArray());
         _lightsBuffer = _accelerator.Allocate1D(lights.ToArray());
@@ -69,8 +72,9 @@ class Renderer
         foreach (var obj in tiles)
         {
             int textureStartIndex = -1;
-            
-            if (obj.Texture != null && !textureStartIndices.TryGetValue(obj.Texture.Name + obj.TileIndex, out textureStartIndex))
+
+            if (obj.Texture != null &&
+                !textureStartIndices.TryGetValue(obj.Texture.Name + obj.TileIndex, out textureStartIndex))
             {
                 // Texture not added yet, add it
                 textureStartIndex = concatenatedTextures.Count;
@@ -87,7 +91,8 @@ class Renderer
         if (concatenatedTextures.Count == 0)
         {
             concatenatedTextures.Add(new Color(0, 0, 0, 0));
-            objectDataList.Add(new Object3DDataOnly(Vector3.Zero, new Color(0,0,0,0), Vector3.Zero, 0, 0, ObjectType.Object, 0));
+            objectDataList.Add(new Object3DDataOnly(Vector3.Zero, new Color(0, 0, 0, 0), Vector3.Zero, 0, 0,
+                ObjectType.Object, 0));
         }
 
         if (!GenDataOnce)
@@ -97,7 +102,7 @@ class Renderer
         }
 
         _tilesBuffer = _accelerator.Allocate1D(objectDataList.ToArray());
-        
+
         _framebuffer.Clear(Color.Black);
         _loadedKernel(
             new Index2D(_framebuffer.Texture.Width, _framebuffer.Texture.Height),
@@ -121,7 +126,7 @@ class Renderer
         _framebuffer.UpdateTexture();
         _depthBuffer.Dispose();
 
-        
+
         Game1.spriteBatch.Draw(_framebuffer.Texture, Game1.game1.screen.Bounds, Color.White);
         RenderSpritesOnCPU(dynamicSprites);
     }
@@ -175,7 +180,7 @@ class Renderer
                 continue;
             Game1.spriteBatch.Draw(sprite.Texture, new Vector2(screenPos.X, screenPos.Y), sprite.SourceRect,
                 new Color(255, 255, 255, 255), 0,
-                Vector2.Zero, new Vector2(scale * 2, scale * 2), SpriteEffects.None, distance);
+                Vector2.Zero, new Vector2(scale * 8, scale * 8), SpriteEffects.None, distance);
         }
     }
 
@@ -202,6 +207,7 @@ class Renderer
         ArrayView<float> depthBuffer,
         Matrix viewMatrix, Matrix projectionMatrix, Vector2 screenSize, Vector3 cameraPosition)
     {
+
         int screenWidth = (int)screenSize.X;
         int screenHeight = (int)screenSize.Y;
 
@@ -257,10 +263,10 @@ class Renderer
                     {
                         // Determine the hit point and normal
                         Vector3 hitPoint = cameraPosition + rayDirection * distance;
-                        Vector3 normal = obj.GetNormal(hitPoint);
+                        Vector3 normal = Vector3.Normalize(obj.GetNormal(hitPoint));
 
                         // Calculate texture coordinates for the hit point
-                        Vector2 uv = CalculateTextureCoordinates(hitPoint, boxMin, boxMax, normal);
+                        Vector2 uv = CalculateTextureCoordinates(hitPoint, boxMin, boxMax, normal, obj.ObjectType);
 
                         // Clamp UV coordinates to avoid out-of-bounds access
                         uv = Vector2.Clamp(uv, Vector2.Zero, Vector2.One);
@@ -298,13 +304,15 @@ class Renderer
         {
             output[outputIndex] = finalColor;
             depthBuffer[outputIndex] = minDistance;
-        } else if (!hit)
+        }
+        else if (!hit)
         {
             output[outputIndex] = new Color(0, 0, 0, 0);
         }
     }
 
-    static Vector2 CalculateTextureCoordinates(Vector3 hitPoint, Vector3 boxMin, Vector3 boxMax, Vector3 normal)
+    static Vector2 CalculateTextureCoordinates(Vector3 hitPoint, Vector3 boxMin, Vector3 boxMax, Vector3 normal,
+        ObjectType objectType)
     {
         float u = 0.0f;
         float v = 0.0f;
@@ -325,17 +333,17 @@ class Renderer
         }
         else if (normal == Vector3.Forward || normal == Vector3.Backward)
         {
-            
             // Front or Back face
             u = (hitPoint.X - boxMin.X) / (boxMax.X - boxMin.X);
             v = (hitPoint.Y - boxMin.Y) / (boxMax.Y - boxMin.Y);
             v = 1 - v;
         }
-
+        
         return new Vector2(u, v);
     }
 
-    static Color SampleTexture(ArrayView<Color> texture, Vector2 uv, int textureWidth, int textureHeight, int textureIndex)
+    static Color SampleTexture(ArrayView<Color> texture, Vector2 uv, int textureWidth, int textureHeight,
+        int textureIndex)
     {
         // Calculate the pixel position in the texture
         int x = (int)(uv.X * textureWidth) % textureWidth;
@@ -437,6 +445,4 @@ class Renderer
 
         return tmax > epsilon; // Ensure intersection is in front of the ray origin
     }
-    
-    
 }
