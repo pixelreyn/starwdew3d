@@ -8,7 +8,8 @@ public enum ObjectType
 {
     Building,
     Object,
-    Tile
+    Tile,
+    Sprite
 }
 
 public struct Object3D
@@ -21,11 +22,12 @@ public struct Object3D
     public Color Color;
     public Vector3 Size;
     private static Dictionary<String, int> stringIntDict = new Dictionary<string, int>();
+    private static Dictionary<string, Color[]> textureCache = new();
     private static int nextId = 0;
     public (Color[], Object3DDataOnly) GetObject3DDataOnly(bool GetColor)
     {
         if (TileIndex == null)
-            return (new Color[] { Color }, new Object3DDataOnly(Position, Color, Size, 0, 0, ObjectType, 0));
+            return (new Color[] { Color }, new Object3DDataOnly(Position, Color, Size, 0, 0, ObjectType, 0, SourceRectangle));
         
         if (!stringIntDict.TryGetValue(TileIndex, out var id))
         {
@@ -35,17 +37,19 @@ public struct Object3D
         
         if (Texture != null && GetColor)
         {
+            if (!textureCache.TryGetValue(TileIndex, out var texColor))
+            {
+                texColor = new Color[SourceRectangle.Width * SourceRectangle.Height];
+                Texture.GetData(0, SourceRectangle, texColor, 0, texColor.Length);
+                textureCache[TileIndex] = texColor;
+            }
             
-            var texColor = new Color[SourceRectangle.Width * SourceRectangle.Height];
-            Texture.GetData(0, SourceRectangle, texColor, 0, SourceRectangle.Width * SourceRectangle.Height);
-
-            return (texColor,
-                new Object3DDataOnly(Position, Color, Size, SourceRectangle.Width, SourceRectangle.Height, ObjectType, id));
+            return (texColor, new Object3DDataOnly(Position, Color, Size, SourceRectangle.Width, SourceRectangle.Height, ObjectType, id, SourceRectangle));
         }
         else
         {
             return (new Color[] { Color },
-                new Object3DDataOnly(Position, Color, Size, SourceRectangle.Width, SourceRectangle.Height, ObjectType, id));
+                new Object3DDataOnly(Position, Color, Size, SourceRectangle.Width, SourceRectangle.Height, ObjectType, id, SourceRectangle));
         }
     } 
     
@@ -59,6 +63,7 @@ public struct Object3D
     {
         nextId = 0;
         stringIntDict.Clear();
+        textureCache.Clear();
     }
 }
 
@@ -72,9 +77,10 @@ public struct Object3DDataOnly
     public int TileIndex;
     public ObjectType ObjectType;
     public BoundingBox BoundingBox;
+    public Rectangle SourceRectangle;
     public int TextureStartIndex; // Add this field to store the start index
 
-    public Object3DDataOnly(Vector3 position,  Color color, Vector3 size, int textureWidth, int textureHeight, ObjectType objectType, int tileIndex)
+    public Object3DDataOnly(Vector3 position,  Color color, Vector3 size, int textureWidth, int textureHeight, ObjectType objectType, int tileIndex, Rectangle sourceRectangle)
     {
         Position = position;
         Color = color;
@@ -82,6 +88,7 @@ public struct Object3DDataOnly
         TextureWidth = textureWidth;
         TextureHeight = textureHeight;
         BoundingBox = new BoundingBox();
+        SourceRectangle = sourceRectangle;
         TextureStartIndex = 0;
         ObjectType = objectType;
         TileIndex = tileIndex;

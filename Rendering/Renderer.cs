@@ -29,6 +29,7 @@ class Renderer
     private Dictionary<string, int> textureStartIndices = new Dictionary<string, int>();
     private float[] _cachedDepthBuffer;
     private bool GenDataOnce = false;
+    private bool _buffersNeedReallocation = true;
 
     public Renderer(Framebuffer framebuffer, Camera3D camera)
     {
@@ -62,11 +63,7 @@ class Renderer
     {
         if (Game1.CurrentEvent != null && !Game1.CurrentEvent.playerControlSequence)
             return;
-
-        // Allocate memory for flattened data
-        _bvhBuffer = _accelerator.Allocate1D(bvhNodes.ToArray());
-        _lightsBuffer = _accelerator.Allocate1D(lights.ToArray());
-        _depthBuffer = _accelerator.Allocate1D(_cachedDepthBuffer);
+        
         List<Object3DDataOnly> objectDataList = new List<Object3DDataOnly>();
 
         foreach (var obj in tiles)
@@ -85,6 +82,9 @@ class Renderer
 
             var objectDataOnly = obj.GetObject3DDataOnly(false).Item2;
             objectDataOnly.TextureStartIndex = textureStartIndex;
+            if (obj.ObjectType == ObjectType.Sprite)
+                objectDataOnly.Size = new Vector3(obj.Size.X, obj.Size.Y, 0);
+            
             objectDataList.Add(objectDataOnly);
         }
 
@@ -92,17 +92,31 @@ class Renderer
         {
             concatenatedTextures.Add(new Color(0, 0, 0, 0));
             objectDataList.Add(new Object3DDataOnly(Vector3.Zero, new Color(0, 0, 0, 0), Vector3.Zero, 0, 0,
-                ObjectType.Object, 0));
+                ObjectType.Object, 0, new Rectangle()));
         }
-
+        
         if (!GenDataOnce)
         {
             _colorBuffer = _accelerator.Allocate1D(concatenatedTextures.ToArray());
+            _buffersNeedReallocation = true;
             GenDataOnce = true;
         }
+        
+        // Allocate memory for flattened data
+        if (_buffersNeedReallocation || _bvhBuffer == null || _tilesBuffer == null || _lightsBuffer == null)
+        {
+            _bvhBuffer?.Dispose();
+            _tilesBuffer?.Dispose();
+            _lightsBuffer?.Dispose();
 
-        _tilesBuffer = _accelerator.Allocate1D(objectDataList.ToArray());
+            _bvhBuffer = _accelerator.Allocate1D(bvhNodes.ToArray());
+            _tilesBuffer = _accelerator.Allocate1D(objectDataList.ToArray());
+            _lightsBuffer = _accelerator.Allocate1D(lights.ToArray());
 
+            _buffersNeedReallocation = false;
+        }
+
+        _depthBuffer = _accelerator.Allocate1D(_cachedDepthBuffer);
         _framebuffer.Clear(Color.Black);
         _loadedKernel(
             new Index2D(_framebuffer.Texture.Width, _framebuffer.Texture.Height),
@@ -119,12 +133,8 @@ class Renderer
         );
         _accelerator.Synchronize();
         _framebuffer.ColorBuffer = _deviceOutput.GetAsArray1D();
-
-        _bvhBuffer.Dispose();
-        _tilesBuffer.Dispose();
-        _lightsBuffer.Dispose();
-        _framebuffer.UpdateTexture();
         _depthBuffer.Dispose();
+        _framebuffer.UpdateTexture();
 
 
         Game1.spriteBatch.Draw(_framebuffer.Texture, Game1.game1.screen.Bounds, Color.White);
@@ -201,7 +211,7 @@ class Renderer
 
         return dotProduct > 0;
     }
-
+    
     static void Kernel(Index2D index, ArrayView<BvhNode> bvhNodes, ArrayView<Object3DDataOnly> tiles,
         ArrayView<Color> concatenatedTextures, ArrayView<Light> lights, ArrayView<Color> output,
         ArrayView<float> depthBuffer,
@@ -258,16 +268,41 @@ class Renderer
                     Object3DDataOnly obj = tiles[i];
                     Vector3 boxMin = obj.Position - obj.Size / 2.0f;
                     Vector3 boxMax = obj.Position + obj.Size / 2.0f;
+                    if (obj.ObjectType == ObjectType.Sprite)
+                    {
+                        // Modify ray intersection logic for billboards
+                        if (RayIntersectsSprite(cameraPosition, rayDirection, obj, out float distance))
+                        {
+                            Vector3 hitPoint = cameraPosition + rayDirection * distance;
+                            // Calculate texture coordinates for sprites
+                            Vector2 uv = CalculateBillboardTextureCoordinates(hitPoint, obj,  cameraPosition);
+                            uv = Vector2.Clamp(uv, Vector2.Zero, Vector2.One);
 
-                    if (RayIntersectsAabb(cameraPosition, rayDirection, boxMin, boxMax, out float distance))
+                            // Existing texture sampling and lighting code...
+                            
+                            Color textureColor = obj.TextureStartIndex == -1
+                                ? obj.Color
+                                : SampleTexture(concatenatedTextures, uv, obj.TextureWidth, obj.TextureHeight,
+                                    obj.TextureStartIndex);
+                            if (textureColor.A > 0 && distance < minDistance)
+                            {
+                                Vector3 viewDirection = Vector3.Normalize(cameraPosition - hitPoint);
+                                Vector3 normal = new Vector3(0, 0, 1); // Billboard faces the camera
+                                finalColor = CalculateLighting(textureColor, hitPoint, normal, viewDirection, lights);
+                                minDistance = distance;
+                                hit = true;
+                            }
+                        }
+                    }
+                    else if (RayIntersectsAabb(cameraPosition, rayDirection, boxMin, boxMax, out float distance))
                     {
                         // Determine the hit point and normal
                         Vector3 hitPoint = cameraPosition + rayDirection * distance;
                         Vector3 normal = Vector3.Normalize(obj.GetNormal(hitPoint));
-
+                        
                         // Calculate texture coordinates for the hit point
-                        Vector2 uv = CalculateTextureCoordinates(hitPoint, boxMin, boxMax, normal, obj.ObjectType);
-
+                        Vector2 uv = CalculateTextureCoordinates(hitPoint, boxMin, boxMax, normal, obj, cameraPosition);
+                        
                         // Clamp UV coordinates to avoid out-of-bounds access
                         uv = Vector2.Clamp(uv, Vector2.Zero, Vector2.One);
 
@@ -310,15 +345,74 @@ class Renderer
             output[outputIndex] = new Color(0, 0, 0, 0);
         }
     }
+    
+    static bool RayIntersectsSprite(Vector3 rayOrigin, Vector3 rayDirection, Object3DDataOnly sprite, out float distance)
+    {
+        // Calculate the intersection with a plane facing the camera
+        Vector3 planeNormal = Vector3.Normalize(rayOrigin - sprite.Position);
+        float denom = Vector3.Dot(planeNormal, rayDirection);
+        distance = 0;
 
+        if (Math.Abs(denom) > 1e-6)
+        {
+            Vector3 pointOnPlane = sprite.Position;
+            distance = Vector3.Dot(pointOnPlane - rayOrigin, planeNormal) / denom;
+
+            // Ensure intersection is within sprite's bounds
+            if (distance >= 0)
+            {
+                Vector3 intersectionPoint = rayOrigin + distance * rayDirection;
+                Vector3 localIntersection = intersectionPoint - sprite.Position;
+
+                // Check if the intersection point is within the sprite's boundaries
+                float halfWidth = sprite.Size.X / 2.0f;
+                float halfHeight = sprite.Size.Y / 2.0f;
+
+                if (Math.Abs(localIntersection.X) <= halfWidth && Math.Abs(localIntersection.Y) <= halfHeight)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    static Vector2 CalculateBillboardTextureCoordinates(Vector3 hitPoint, Object3DDataOnly sprite, Vector3 cameraPosition)
+    {
+        // Compute the direction from the camera to the sprite
+        Vector3 cameraToSprite = sprite.Position - cameraPosition;
+        cameraToSprite.Y = 0; // Ignore vertical offset for simplicity
+
+        // Calculate right and up vectors based on camera orientation
+        Vector3 right = Vector3.Normalize(Vector3.Cross(Vector3.Up, cameraToSprite));
+        Vector3 up = Vector3.Up; // Always keep up vector as Y-axis
+
+        // Calculate local hit point relative to the sprite's position
+        Vector3 localHitPoint = hitPoint - sprite.Position;
+        
+        float halfWidth = sprite.Size.X / 2.0f;
+        float halfHeight = sprite.Size.Y / 2.0f;
+
+        // Clamp localHitPoint to ensure it's within the sprite's bounding box
+        localHitPoint.X = MathHelper.Clamp(localHitPoint.X, -halfWidth, halfWidth);
+        localHitPoint.Y = MathHelper.Clamp(localHitPoint.Y, -halfHeight, halfHeight);
+        
+        // Map local hit point to UV coordinates in the sprite's texture space
+        float u = (Vector3.Dot(localHitPoint, right) / sprite.Size.X) + 0.49f;
+        float v = (Vector3.Dot(localHitPoint, up) / sprite.Size.Y) + 0.5f;
+
+        // Adjust UVs to ensure they map correctly onto the sprite's texture
+        return new Vector2(u, 1 - v);
+    }
+    
     static Vector2 CalculateTextureCoordinates(Vector3 hitPoint, Vector3 boxMin, Vector3 boxMax, Vector3 normal,
-        ObjectType objectType)
+        Object3DDataOnly obj, Vector3 cameraPosition)
     {
         float u = 0.0f;
         float v = 0.0f;
 
         // Determine which face was hit based on the normal vector
-        if (normal == Vector3.Up || normal == Vector3.Down)
+        if (obj.ObjectType == ObjectType.Tile && normal == Vector3.Up || normal == Vector3.Down)
         {
             // Top or Bottom face
             u = (hitPoint.X - boxMin.X) / (boxMax.X - boxMin.X);
@@ -338,7 +432,7 @@ class Renderer
             v = (hitPoint.Y - boxMin.Y) / (boxMax.Y - boxMin.Y);
             v = 1 - v;
         }
-        
+
         return new Vector2(u, v);
     }
 

@@ -214,7 +214,6 @@ public class Map
         {
             if (!buildingLayer.Id.Contains("Building"))
                 continue;
-
             for (var x = 0; x < buildingLayer.Tiles.Array.GetLength(0); x++)
             {
                 for (var y = 0; y < buildingLayer.Tiles.Array.GetLength(1); y++)
@@ -231,11 +230,12 @@ public class Map
                             _loadedTextures.Add(tile.TileSheet.ImageSource, texture);
                         }
 
+                        var yPos = tile.TileIndex is 294 or 394 or 419 or 342 or 367 or 392 or 417 or 442 or 1009 ? -32 : 64;
                         var tileRect = tile.TileSheet.GetTileImageBounds(tile.TileIndex);
                         var wtile = new Object3D()
                         {
                             Color = color,
-                            Position = new Vector3(x * 64, 64, y * 64),
+                            Position = new Vector3(x * 64, yPos, y * 64),
                             Size = new Vector3(64, 64, 64),
                             Texture = texture,
                             ObjectType = ObjectType.Object,
@@ -244,7 +244,7 @@ public class Map
                             TileIndex = tile.Id + tile.TileIndex.ToString()
                         };
 
-                        _3dObjects.TryAdd((x, 1, y), wtile);
+                        _3dObjects.TryAdd((x, yPos == -32 ? 0 : 1, y), wtile);
 
                     }
                 }
@@ -306,15 +306,17 @@ public class Map
             }
         }
         
-        foreach (var layer in Game1.game1.instanceGameLocation.backgroundLayers)
+        foreach (var layer in Game1.game1.instanceGameLocation.map.Layers)
         {
-            for (var x = 0; x < layer.Key.Tiles.Array.GetLength(0); x++)
+            if (!layer.Id.Contains("Back"))
+                continue;
+            for (var x = 0; x < layer.Tiles.Array.GetLength(0); x++)
             {
-                for (var y = 0; y < layer.Key.Tiles.Array.GetLength(1); y++)
+                for (var y = 0; y < layer.Tiles.Array.GetLength(1); y++)
                 {
 
                     Color color = new Color(36, 36, 36, 255);
-                    var tile = layer.Key.Tiles[x, y];
+                    var tile = layer.Tiles[x, y];
                     color = new Color(36, 0, 0, 255);
                     if (tile == null)
                         continue;
@@ -383,12 +385,13 @@ public class Map
                 ParsedItemData dataOrErrorItem1 = ItemRegistry.GetDataOrErrorItem(furniture.QualifiedItemId);
                 var texture = dataOrErrorItem1.GetTexture();
                 var sourceRect = dataOrErrorItem1.GetSourceRect();
+                var ySize = furniture.Name.Contains("Bed") ? 32 : 64; 
                 var wObject = new Object3D()
                 {
                     Color = Color.Red,
                     ObjectType = ObjectType.Object,
-                    Position = new Vector3((furniture.TileLocation.X) * 64, 64, (furniture.TileLocation.Y) * 64),
-                    Size = new Vector3(furniture.boundingBox.Width, furniture.boundingBox.Height, furniture.boundingBox.Height),
+                    Position = new Vector3((furniture.TileLocation.X) * 64, ySize, (furniture.TileLocation.Y) * 64),
+                    Size = new Vector3(furniture.boundingBox.Width, ySize, furniture.boundingBox.Height),
                     SourceRectangle = sourceRect,
                     Texture = texture,
                     TileIndex = furniture.furniture_type.Value.ToString() + furniture.Name
@@ -408,7 +411,7 @@ public class Map
             var wObject3d = new Object3D()
             {
                 Color = Color.Red,
-                ObjectType = ObjectType.Object,
+                ObjectType = ObjectType.Sprite,
                 Position = new Vector3((wObject.TileLocation.X) * 64, 48, (wObject.TileLocation.Y) * 64),
                 Size = new Vector3(wObject.boundingBox.Width / 3, wObject.boundingBox.Height / 3, wObject.boundingBox.Width / 3),
                 SourceRectangle = sourceRect,
@@ -462,7 +465,7 @@ public class Map
                     {
                         Position = new Vector3((tf.Tile.X) * 64, yPos, (tf.Tile.Y) * 64),
                         Color = Color.Green,
-                        ObjectType = ObjectType.Object,
+                        ObjectType = ObjectType.Sprite,
                         Size = TreeSize,
                         Texture = (tf as Tree).texture.Value,
                         SourceRectangle = sourceRect,
@@ -479,7 +482,7 @@ public class Map
                     {
                         Position = new Vector3((tf.Tile.X) * 64, 56, (tf.Tile.Y) * 64),
                         Color = Color.Green,
-                        ObjectType = ObjectType.Object,
+                        ObjectType = ObjectType.Sprite,
                         Size = new Vector3(tf.getBoundingBox().Width, tf.getBoundingBox().Height, tf.getBoundingBox().Width),
                         Texture = crop.DrawnCropTexture,
                         SourceRectangle = crop.sourceRect,
