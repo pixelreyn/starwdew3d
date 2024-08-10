@@ -7,16 +7,13 @@
         <AssemblyName>StardewValley3D</AssemblyName>
         <RootNamespace>StardewValley3D</RootNamespace>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="ILGPU" Version="1.5.1" />
       <PackageReference Include="ILGPU.Algorithms" Version="1.5.1" />
       <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ClCompile Include="Shaders\PixelShader.fx" />
     </ItemGroup>
 
 </Project>

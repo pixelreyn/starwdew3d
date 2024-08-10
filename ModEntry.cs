@@ -3,6 +3,7 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley3D.Rendering;
+using StardewValley3D.StardewInterfaces;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace StardewValley3D
@@ -12,7 +13,7 @@ namespace StardewValley3D
     {
 
         private StardewInterfaces.Character? _mCharacter;
-        private StardewInterfaces.Map? _mMap;
+        private World? _world;
         private Framebuffer? _framebuffer;
         private Renderer? _renderer;
         private Light _worldLight;
@@ -47,62 +48,69 @@ namespace StardewValley3D
 
         private void DisplayOnRenderedWorld(object? sender, RenderedWorldEventArgs e)
         {
-            if (_mMap == null || _framebuffer == null || _renderer == null)
+            if (_world == null || _framebuffer == null || _renderer == null)
                 return;
-            _mMap.GenerateDynamicSprites();
-            _renderer.RenderA(_mMap.GetBvhNodes(), _mMap.GetFlatTiles(), _mMap.GetLoadedTextures(), new List<Light>(new [] {_worldLight}), _mMap.GetDynamicSprites());
+            
+            _world.UpdateCharacters();
+            _renderer.Render(_world.GetFlattenedNodes(), new List<Light>(new [] {_worldLight}));
         }
 
         private void WorldOnTerrainFeatureListChanged(object? sender, TerrainFeatureListChangedEventArgs e)
         {
-            if(_mMap != null)
-                _mMap.GenerateMap();
+            RenderingData.ResetData();
             if(_renderer != null)
                 _renderer.ClearTextures();
-            Object3D.ResetIndex();
+            if(_world != null)
+                _world.GenerateMap();
         }
 
         private void WorldOnObjectListChanged(object? sender, ObjectListChangedEventArgs e)
         {
-            if(_mMap != null)
-                _mMap.GenerateMap();
+            RenderingData.ResetData();
             if(_renderer != null)
                 _renderer.ClearTextures();
-            Object3D.ResetIndex();
+            if(_world != null)
+                _world.GenerateMap();
         }
 
         private void WorldOnDebrisListChanged(object? sender, DebrisListChangedEventArgs e)
         {
-            if(_mMap != null)
-                _mMap.GenerateMap();
+            RenderingData.ResetData();
             if(_renderer != null)
                 _renderer.ClearTextures();
-            Object3D.ResetIndex();
+            if(_world != null)
+                _world.GenerateMap();
         }
 
         private void PlayerOnWarped(object? sender, WarpedEventArgs e)
         {
             //Update the base map to render here
-            if(_mMap != null)
-                _mMap.GenerateMap();
+            RenderingData.ResetData();
             if(_renderer != null)
                 _renderer.ClearTextures();
-            Object3D.ResetIndex();
+            if(_world != null)
+                _world.GenerateMap();
         }
         
         private void GameLoopOnSaveLoaded(object? sender, SaveLoadedEventArgs e)
         {
             this.Monitor.Log($"Game Launched", LogLevel.Debug);
             
+            RenderingData.ResetData();
+            
             _mCharacter ??= new StardewInterfaces.Character();
-            _mMap ??= new StardewInterfaces.Map();
-            _mMap.Helper = _helper;
-            _mMap.GenerateMap();
+            
             _framebuffer = new Framebuffer(Game1.graphics.GraphicsDevice, Game1.game1.screen.Width, Game1.game1.screen.Height);
             _framebuffer.Clear(Color.Black);
+            
             _renderer = new Renderer(_framebuffer, _mCharacter.Camera);
             _renderer.ClearTextures();
-            _worldLight = new() { Color = Color.LightYellow, Intensity = 2.0f, Position = new Vector3(128, 1024, 128), Direction = new Vector3(-0.5f, -1.0f, -0.5f), IsDirectional = 1};
+            
+            _worldLight = new() { Color = Color.LightYellow, Intensity = 2.0f, Position = new Vector3(128, 1024, 128), Direction = new Vector3(0.5f, -1.0f, 0.5f), IsDirectional = 1};
+            
+            
+            _world ??= new World(_helper);
+            _world.GenerateMap();
         }
 
     }

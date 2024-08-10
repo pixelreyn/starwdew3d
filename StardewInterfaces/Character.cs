@@ -89,29 +89,6 @@ public class Character
         }
     }
     
-    private int GetFacingDirection(Vector3 direction)
-    {
-        // Use the camera's forward and right vectors
-        Vector3 forward = Camera.GetForward();
-        Vector3 right = Camera.GetRight();
-
-        // Calculate the dot products between the input direction and the camera's axes
-        float forwardDot = Vector3.Dot(direction, forward);
-        float rightDot = Vector3.Dot(direction, right);
-
-        // Determine the facing direction based on the greatest dot product
-        if (MathF.Abs(forwardDot) > MathF.Abs(rightDot))
-        {
-            // The direction is more forward/backward
-            return forwardDot > 0 ? 0 : 2; // 0 for Forward, 2 for Backward
-        }
-        else
-        {
-            // The direction is more left/right
-            return rightDot > 0 ? 1 : 3; // 1 for Right, 3 for Left
-        }
-    }
-    
     private int GetFacingDirectionFromCamera()
     {
         // Get the camera's yaw angle in radians
