@@ -29,7 +29,8 @@ public class RenderingData
             var texColor = new Color[sourceRectangle.Width * sourceRectangle.Height];
             texture.GetData(0, sourceRectangle, texColor, 0, texColor.Length);
             TextureCache.Add(tileId, texColor);
-            id = NextTexId++;
+            id = tileId.GetHashCode();
+            //id = NextTexId++;
             TextureIdString.Add(tileId, id);
             TextureStringId.Add(id, tileId);
         }

@@ -106,8 +106,6 @@ class Renderer
         Game1.spriteBatch.Draw(_framebuffer.Texture, Game1.game1.screen.Bounds, Color.White);
         
         sw.Stop();
-        //Console.WriteLine($"Render Step took {sw.ElapsedMilliseconds}");
-        //RenderSpritesOnCPU(dynamicSprites);
     }
 
     static void RaytraceKernel(Index2D index, ArrayView<FlattenedBVHNode> bvhNodes,
@@ -171,9 +169,9 @@ class Renderer
                             : SampleTexture(concatenatedTextures, uv, node.TextureWidth,
                                 node.TextureHeight,
                                 node.TextureStartIndex);
-                        if (textureColor.A > 0 && distance < minDistance)
+                        if (textureColor.A > 200 && distance < minDistance)
                         {
-                            finalColor = textureColor;
+                            finalColor = textureColor.A > 200 ? textureColor : new Color(0,0,0,0);
                             minDistance = distance;
                             hit = true;
                         }
@@ -289,7 +287,7 @@ class Renderer
         float v = (Vector3.Dot(localHitPoint, up) / sprite.Size.Y) + 0.5f;
 
         // Adjust UVs to ensure they map correctly onto the sprite's texture
-        return new Vector2(u, 1 - v);
+        return new Vector2(1 - u, 1 - v);
     }
 
     static Vector2 CalculateTextureCoordinates(Vector3 hitPoint, Vector3 boxMin, Vector3 boxMax, Vector3 normal,
