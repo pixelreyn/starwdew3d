@@ -11,6 +11,7 @@ public class Camera3D
     private float _yaw; // Y-axis rotation
     private float _pitch; // X-axis rotation
 
+    public bool EditorMode = false;
     private Matrix _viewMatrix;
     private Matrix _projectionMatrix;
 
@@ -43,6 +44,9 @@ public class Camera3D
         if (!Game1.game1.IsActive || Game1.activeClickableMenu != null)
             return;
 
+        if (EditorMode)
+            return;
+        
         MouseState mouseState = Mouse.GetState();
         
         //Set mouse to corner so that it's far enough from player to force toolbox forward

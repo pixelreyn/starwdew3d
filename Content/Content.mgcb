@@ -1,0 +1,26 @@
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:bin/DesktopGL/Content
+/intermediateDir:obj/DesktopGL/Content
+/platform:DesktopGL
+/config:
+/profile:Reach
+/compress:False
+
+#-------------------------------- References --------------------------------#
+
+
+#---------------------------------- Content ----------------------------------#
+
+#begin Shaders/Billboard.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Shaders/Billboard.fx
+
+
+#begin Shaders/InstancedShader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Shaders/InstancedShader.fx

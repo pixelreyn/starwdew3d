@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net6.0": {
+      "ILGPU": {
+        "type": "Direct",
+        "requested": "[1.5.1, )",
+        "resolved": "1.5.1",
+        "contentHash": "Q4URSxEqH+u0XE3XCtYZ2h3FZgLp9VOOeelvKCmniiTlKft0JNCs13EOqayWVjwvPUbD4w/XaFlP3CdmaRdj8w=="
+      },
+      "ILGPU.Algorithms": {
+        "type": "Direct",
+        "requested": "[1.5.1, )",
+        "resolved": "1.5.1",
+        "contentHash": "PCoyiLrku1GXWJFU7XNQiTLYmwm5igHpzW6dv+5pBQcm8Ufav0V1jXtnWme/WuE8mlC1fkpHWspEUJdltgrYSg==",
+        "dependencies": {
+          "ILGPU": "1.5.1"
+        }
+      },
+      "MonoGame.Content.Builder.Task": {
+        "type": "Direct",
+        "requested": "[3.8.0.1641, )",
+        "resolved": "3.8.0.1641",
+        "contentHash": "oHA60q9MhkqGnSiJlXosdynD400sQ/j1Ef+0XkJYIQT4Io9RQ6Zk8i0vjpnIbQ0PgsoaQN3IRYjNzkhqq3uUGA=="
+      },
+      "Pathoschild.Stardew.ModBuildConfig": {
+        "type": "Direct",
+        "requested": "[4.1.1, )",
+        "resolved": "4.1.1",
+        "contentHash": "iLEtUWuj+vFTa0HNJmOm0yMIx5ZnED3WHxM1groLUUcFQWV63IMyF5lSQ9d0dteFu7t2dbl/scLwHBdjk0d7AA=="
+      }
+    }
+  }
+}

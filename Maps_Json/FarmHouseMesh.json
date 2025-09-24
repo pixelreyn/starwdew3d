@@ -1,0 +1,3295 @@
+{
+    "tiles": [
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 160.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 128.0,
+            "tilePos_x": 160.0,
+            "tilePos_y": 128.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 16.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 48.0,
+            "tilePos_x": 16.0,
+            "tilePos_y": 48.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 80.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 64.0,
+            "tilePos_x": 80.0,
+            "tilePos_y": 64.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 96.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 112.0,
+            "tilePos_x": 96.0,
+            "tilePos_y": 112.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 64.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 64.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 64.0,
+                    "y": 1040.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 176.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 112.0,
+            "tilePos_x": 176.0,
+            "tilePos_y": 112.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 160.0,
+                    "y": 1072.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 96.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 2.75,
+            "tilePos_x": 96.0,
+            "tilePos_y": 0.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 112.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 48.0,
+            "tilePos_x": 112.0,
+            "tilePos_y": 48.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 96.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 48.0,
+            "tilePos_x": 96.0,
+            "tilePos_y": 48.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 48.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 64.0,
+            "tilePos_x": 48.0,
+            "tilePos_y": 64.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 128.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 80.0,
+            "tilePos_x": 128.0,
+            "tilePos_y": 80.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 80.0,
+                    "y": 992.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 112.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 112.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 112.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 64.0,
+            "tilePos_x": 112.0,
+            "tilePos_y": 64.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 48.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 48.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 160.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 112.0,
+            "tilePos_x": 160.0,
+            "tilePos_y": 112.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 64.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 128.0,
+            "tilePos_x": 64.0,
+            "tilePos_y": 128.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 0.0,
+                    "y": 1040.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 0.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 144.0,
+            "tilePos_x": 0.0,
+            "tilePos_y": 144.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 96.0,
+                    "y": 208.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 0.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 64.0,
+            "tilePos_x": 0.0,
+            "tilePos_y": 64.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 160.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 96.0,
+            "tilePos_x": 160.0,
+            "tilePos_y": 96.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 160.0,
+                    "y": 1072.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 48.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 2.75,
+            "tilePos_x": 48.0,
+            "tilePos_y": 0.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 112.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 144.0,
+            "tilePos_x": 112.0,
+            "tilePos_y": 144.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 96.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 80.0,
+            "tilePos_x": 96.0,
+            "tilePos_y": 80.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 160.0,
+                    "y": 1072.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 16.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 2.75,
+            "tilePos_x": 16.0,
+            "tilePos_y": 0.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 32.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 128.0,
+            "tilePos_x": 32.0,
+            "tilePos_y": 128.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 144.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 112.0,
+            "tilePos_x": 144.0,
+            "tilePos_y": 112.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 128.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 128.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 80.0,
+                    "y": 992.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 48.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 176.0,
+            "tilePos_x": 48.0,
+            "tilePos_y": 176.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 80.0,
+                    "y": 992.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 80.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 80.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 48.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 80.0,
+            "tilePos_x": 48.0,
+            "tilePos_y": 80.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 160.0,
+                    "y": 1072.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 160.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 2.75,
+            "tilePos_x": 160.0,
+            "tilePos_y": 0.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 160.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 160.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 96.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 128.0,
+            "tilePos_x": 96.0,
+            "tilePos_y": 128.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 160.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 48.0,
+            "tilePos_x": 160.0,
+            "tilePos_y": 48.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 48.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 96.0,
+            "tilePos_x": 48.0,
+            "tilePos_y": 96.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 16.0,
+                    "y": 992.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 16.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 16.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 176.0,
+                    "y": 1072.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 176.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 3.0,
+            "tilePos_x": 176.0,
+            "tilePos_y": 0.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "farmhouse_tiles",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 128.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 176.0,
+            "tilePos_x": 128.0,
+            "tilePos_y": 176.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 64.0,
+                    "y": 1040.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 176.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 80.0,
+            "tilePos_x": 176.0,
+            "tilePos_y": 80.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 16.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 144.0,
+            "tilePos_x": 16.0,
+            "tilePos_y": 144.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 96.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 96.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "farmhouse_tiles",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 160.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 176.0,
+            "tilePos_x": 160.0,
+            "tilePos_y": 176.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 128.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 144.0,
+            "tilePos_x": 128.0,
+            "tilePos_y": 144.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 64.0,
+                    "y": 1040.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 176.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 96.0,
+            "tilePos_x": 176.0,
+            "tilePos_y": 96.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 112.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 112.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "farmhouse_tiles",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 144.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 176.0,
+            "tilePos_x": 144.0,
+            "tilePos_y": 176.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 128.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 96.0,
+            "tilePos_x": 128.0,
+            "tilePos_y": 96.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 32.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 32.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 144.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 80.0,
+            "tilePos_x": 144.0,
+            "tilePos_y": 80.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 32.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 112.0,
+            "tilePos_x": 32.0,
+            "tilePos_y": 112.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 80.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 112.0,
+            "tilePos_x": 80.0,
+            "tilePos_y": 112.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 80.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 80.0,
+            "tilePos_x": 80.0,
+            "tilePos_y": 80.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 80.0,
+                    "y": 992.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 144.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 144.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 160.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 80.0,
+            "tilePos_x": 160.0,
+            "tilePos_y": 80.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 64.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 96.0,
+            "tilePos_x": 64.0,
+            "tilePos_y": 96.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 96.0,
+                    "y": 992.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 160.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 160.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 32.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 80.0,
+            "tilePos_x": 32.0,
+            "tilePos_y": 80.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "farmhouse_tiles",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 80.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 176.0,
+            "tilePos_x": 80.0,
+            "tilePos_y": 176.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 16.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 96.0,
+            "tilePos_x": 16.0,
+            "tilePos_y": 96.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 32.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 96.0,
+            "tilePos_x": 32.0,
+            "tilePos_y": 96.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 64.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 144.0,
+            "tilePos_x": 64.0,
+            "tilePos_y": 144.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 0.0,
+                    "y": 1040.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 0.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 80.0,
+            "tilePos_x": 0.0,
+            "tilePos_y": 80.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 160.0,
+                    "y": 1072.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 32.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 2.75,
+            "tilePos_x": 32.0,
+            "tilePos_y": 0.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 0.0,
+                    "y": 992.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 0.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 0.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 32.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 48.0,
+            "tilePos_x": 32.0,
+            "tilePos_y": 48.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 144.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 128.0,
+            "tilePos_x": 144.0,
+            "tilePos_y": 128.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 112.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 80.0,
+            "tilePos_x": 112.0,
+            "tilePos_y": 80.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 112.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 128.0,
+            "tilePos_x": 112.0,
+            "tilePos_y": 128.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 80.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 80.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 80.0,
+                    "y": 992.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 96.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 96.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 160.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 144.0,
+            "tilePos_x": 160.0,
+            "tilePos_y": 144.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 160.0,
+                    "y": 1072.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 64.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 2.75,
+            "tilePos_x": 64.0,
+            "tilePos_y": 0.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 128.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 64.0,
+            "tilePos_x": 128.0,
+            "tilePos_y": 64.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 48.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 128.0,
+            "tilePos_x": 48.0,
+            "tilePos_y": 128.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 64.0,
+                    "y": 1040.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 176.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 64.0,
+            "tilePos_x": 176.0,
+            "tilePos_y": 64.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 16.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 112.0,
+            "tilePos_x": 16.0,
+            "tilePos_y": 112.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 144.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 144.0,
+            "tilePos_x": 144.0,
+            "tilePos_y": 144.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 48.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 112.0,
+            "tilePos_x": 48.0,
+            "tilePos_y": 112.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 64.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 80.0,
+            "tilePos_x": 64.0,
+            "tilePos_y": 80.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 48.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 144.0,
+            "tilePos_x": 48.0,
+            "tilePos_y": 144.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 0.0,
+                    "y": 1040.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 0.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 128.0,
+            "tilePos_x": 0.0,
+            "tilePos_y": 128.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 32.0,
+                    "y": 992.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 32.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 32.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 64.0,
+                    "y": 1040.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 176.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 144.0,
+            "tilePos_x": 176.0,
+            "tilePos_y": 144.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 112.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 96.0,
+            "tilePos_x": 112.0,
+            "tilePos_y": 96.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 64.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 64.0,
+            "tilePos_x": 64.0,
+            "tilePos_y": 64.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 128.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 112.0,
+            "tilePos_x": 128.0,
+            "tilePos_y": 112.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 64.0,
+                    "y": 1040.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 176.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 128.0,
+            "tilePos_x": 176.0,
+            "tilePos_y": 128.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 0.0,
+                    "y": 1040.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 0.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 64.0,
+            "tilePos_x": 0.0,
+            "tilePos_y": 64.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "farmhouse_tiles",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 16.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 176.0,
+            "tilePos_x": 16.0,
+            "tilePos_y": 176.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 144.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 96.0,
+            "tilePos_x": 144.0,
+            "tilePos_y": 96.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 64.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 112.0,
+            "tilePos_x": 64.0,
+            "tilePos_y": 112.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 80.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 144.0,
+            "tilePos_x": 80.0,
+            "tilePos_y": 144.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 32.0,
+                    "y": 1008.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 64.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 176.0,
+            "tilePos_x": 64.0,
+            "tilePos_y": 176.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 0.0,
+                    "y": 1040.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 0.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 96.0,
+            "tilePos_x": 0.0,
+            "tilePos_y": 96.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "farmhouse_tiles",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 176.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 176.0,
+            "tilePos_x": 176.0,
+            "tilePos_y": 176.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 32.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 64.0,
+            "tilePos_x": 32.0,
+            "tilePos_y": 64.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "farmhouse_tiles",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 0.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 176.0,
+            "tilePos_x": 0.0,
+            "tilePos_y": 176.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 160.0,
+                    "y": 1072.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 112.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 2.75,
+            "tilePos_x": 112.0,
+            "tilePos_y": 0.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 80.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 48.0,
+            "tilePos_x": 80.0,
+            "tilePos_y": 48.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 16.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 64.0,
+            "tilePos_x": 16.0,
+            "tilePos_y": 64.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 0.0,
+                    "y": 1040.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 0.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 112.0,
+            "tilePos_x": 0.0,
+            "tilePos_y": 112.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "farmhouse_tiles",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 96.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 176.0,
+            "tilePos_x": 96.0,
+            "tilePos_y": 176.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 144.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 144.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 160.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 64.0,
+            "tilePos_x": 160.0,
+            "tilePos_y": 64.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "farmhouse_tiles",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 112.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 176.0,
+            "tilePos_x": 112.0,
+            "tilePos_y": 176.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 16.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 16.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 16.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 80.0,
+            "tilePos_x": 16.0,
+            "tilePos_y": 80.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 144.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 48.0,
+            "tilePos_x": 144.0,
+            "tilePos_y": 48.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 64.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 48.0,
+            "tilePos_x": 64.0,
+            "tilePos_y": 48.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 96.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 64.0,
+            "tilePos_x": 96.0,
+            "tilePos_y": 64.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 0.0,
+                    "y": 1024.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 32.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 176.0,
+            "tilePos_x": 32.0,
+            "tilePos_y": 176.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 80.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 96.0,
+            "tilePos_x": 80.0,
+            "tilePos_y": 96.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 160.0,
+                    "y": 1072.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 128.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 2.75,
+            "tilePos_x": 128.0,
+            "tilePos_y": 0.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 144.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 64.0,
+            "tilePos_x": 144.0,
+            "tilePos_y": 64.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 48.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 48.0,
+            "tilePos_x": 48.0,
+            "tilePos_y": 48.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 144.0,
+                    "y": 1072.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 0.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 3.0,
+            "tilePos_x": 0.0,
+            "tilePos_y": 0.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 80.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 128.0,
+            "tilePos_x": 80.0,
+            "tilePos_y": 128.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 96.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 144.0,
+            "tilePos_x": 96.0,
+            "tilePos_y": 144.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 48.0,
+                    "y": 992.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 64.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 64.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 32.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 144.0,
+            "tilePos_x": 32.0,
+            "tilePos_y": 144.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 160.0,
+                    "y": 1072.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 80.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 2.75,
+            "tilePos_x": 80.0,
+            "tilePos_y": 0.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 112.0,
+                    "y": 992.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 176.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 176.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 96.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 96.0,
+            "tilePos_x": 96.0,
+            "tilePos_y": 96.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 160.0,
+                    "y": 1072.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 144.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 2.75,
+            "tilePos_x": 144.0,
+            "tilePos_y": 0.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 16.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 128.0,
+            "tilePos_x": 16.0,
+            "tilePos_y": 128.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 336.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 128.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 128.0,
+            "tilePos_x": 128.0,
+            "tilePos_y": 128.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 16.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 128.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 48.0,
+            "tilePos_x": 128.0,
+            "tilePos_y": 48.0
+        },
+        {
+            "Layer": "Front",
+            "sprites": [
+                {
+                    "spriteSheet": "townInterior",
+                    "x": 80.0,
+                    "y": 992.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 640.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 656.0,
+                    "width": 16.0,
+                    "height": 16.0
+                },
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 672.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 4,
+            "worldPos_x": 128.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 160.0,
+            "tilePos_x": 128.0,
+            "tilePos_y": 160.0
+        },
+        {
+            "Layer": "Back",
+            "sprites": [
+                {
+                    "spriteSheet": "walls_and_floors",
+                    "x": 0.0,
+                    "y": 320.0,
+                    "width": 16.0,
+                    "height": 16.0
+                }
+            ],
+            "height": 1,
+            "worldPos_x": 112.0,
+            "worldPos_y": 0.0,
+            "worldPos_z": 112.0,
+            "tilePos_x": 112.0,
+            "tilePos_y": 112.0
+        }
+    ]
+}

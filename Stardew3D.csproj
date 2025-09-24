@@ -8,12 +8,32 @@
         <RootNamespace>StardewValley3D</RootNamespace>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <EnableHarmony>true</EnableHarmony>
+        <GamePath>G:\Games\SteamLibrary\steamapps\common\Stardew Valley</GamePath>
+
+        <!-- MonoGame Content Pipeline settings -->
+        <MonoGamePlatform>DesktopGL</MonoGamePlatform>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="ILGPU" Version="1.5.1" />
-      <PackageReference Include="ILGPU.Algorithms" Version="1.5.1" />
-      <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.1" />
+        <PackageReference Include="ILGPU" Version="1.5.1" />
+        <PackageReference Include="ILGPU.Algorithms" Version="1.5.1" />
+        <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.1" />
+        <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
     </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Maps_Json\" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <MonoGameContentReference Include="Content\Content.mgcb" />
+    </ItemGroup>
+
+    <!-- Restore tools before building -->
+    <Target Name="RestoreTools" BeforeTargets="Build">
+        <Exec Command="dotnet tool restore" />
+    </Target>
 
 </Project>
